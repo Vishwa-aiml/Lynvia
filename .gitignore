@@ -1,0 +1,12 @@
+﻿.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.env
+
+backend/*firebase-adminsdk*.json
+*.firebase-adminsdk*.json
+.env
+.env.*
+!.env.example

@@ -1,0 +1,135 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.11.7, pytest-8.4.2, pluggy-1.6.0 -- C:\Users\Viswa\AppData\Local\Programs\Python\Python311\python.exe
+cachedir: .pytest_cache
+rootdir: D:\Lynvia\backend
+plugins: anyio-4.13.0
+collecting ... collected 25 items
+
+tests/test_chat.py::test_conversation_created_for_valid_project PASSED   [  4%]
+tests/test_chat.py::test_conversation_no_duplicate PASSED                [  8%]
+tests/test_chat.py::test_designer_can_access_conversation PASSED         [ 12%]
+tests/test_chat.py::test_unrelated_client_rejected PASSED                [ 16%]
+tests/test_chat.py::test_unrelated_designer_rejected PASSED              [ 20%]
+tests/test_chat.py::test_unauthenticated_rejected PASSED                 [ 24%]
+tests/test_chat.py::test_send_and_list_messages PASSED                   [ 28%]
+tests/test_chat.py::test_empty_message_rejected PASSED                   [ 32%]
+tests/test_chat.py::test_oversized_message_rejected PASSED               [ 36%]
+tests/test_chat.py::test_correct_sender PASSED                           [ 40%]
+tests/test_chat.py::test_valid_reply PASSED                              [ 44%]
+tests/test_chat.py::test_nonexistent_reply_rejected PASSED               [ 48%]
+tests/test_chat.py::test_sender_can_delete_own_message PASSED            [ 52%]
+tests/test_chat.py::test_other_user_cannot_delete_message PASSED         [ 56%]
+tests/test_chat.py::test_deleted_message_content_redacted_in_list PASSED [ 60%]
+tests/test_chat.py::test_reply_to_deleted_message_rejected PASSED        [ 64%]
+tests/test_chat.py::test_sender_can_edit_own_message PASSED              [ 68%]
+tests/test_chat.py::test_other_user_cannot_edit_message PASSED           [ 72%]
+tests/test_chat.py::test_unread_count_and_mark_read PASSED               [ 76%]
+tests/test_chat.py::test_recipient_gets_new_message_notification PASSED  [ 80%]
+tests/test_chat.py::test_sender_does_not_get_own_message_notification PASSED [ 84%]
+tests/test_chat.py::test_notification_preference_respected PASSED        [ 88%]
+tests/test_chat.py::test_websocket_unauthenticated_rejected PASSED       [ 92%]
+tests/test_chat.py::test_websocket_authenticated_send_and_receive PASSED [ 96%]
+tests/test_chat.py::test_websocket_unauthorized_user_rejected PASSED     [100%]
+
+============================== warnings summary ===============================
+app\core\config.py:6
+  D:\Lynvia\backend\app\core\config.py:6: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class Settings(BaseSettings):
+
+app\schemas\auth.py:13
+  D:\Lynvia\backend\app\schemas\auth.py:13: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class UserOut(BaseModel):
+
+C:\Users\Viswa\AppData\Local\Programs\Python\Python311\Lib\site-packages\pydantic\_internal\_config.py:386
+C:\Users\Viswa\AppData\Local\Programs\Python\Python311\Lib\site-packages\pydantic\_internal\_config.py:386
+C:\Users\Viswa\AppData\Local\Programs\Python\Python311\Lib\site-packages\pydantic\_internal\_config.py:386
+C:\Users\Viswa\AppData\Local\Programs\Python\Python311\Lib\site-packages\pydantic\_internal\_config.py:386
+C:\Users\Viswa\AppData\Local\Programs\Python\Python311\Lib\site-packages\pydantic\_internal\_config.py:386
+C:\Users\Viswa\AppData\Local\Programs\Python\Python311\Lib\site-packages\pydantic\_internal\_config.py:386
+C:\Users\Viswa\AppData\Local\Programs\Python\Python311\Lib\site-packages\pydantic\_internal\_config.py:386
+  C:\Users\Viswa\AppData\Local\Programs\Python\Python311\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+  * 'orm_mode' has been renamed to 'from_attributes'
+    warnings.warn(message, UserWarning)
+
+app\schemas\profile.py:19
+  D:\Lynvia\backend\app\schemas\profile.py:19: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class ClientProfileOut(BaseModel):
+
+app\schemas\profile.py:49
+  D:\Lynvia\backend\app\schemas\profile.py:49: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class DesignerProfileOut(BaseModel):
+
+app\schemas\service.py:11
+  D:\Lynvia\backend\app\schemas\service.py:11: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class SkillOut(BaseModel):
+
+app\schemas\service.py:37
+  D:\Lynvia\backend\app\schemas\service.py:37: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class ServiceOut(BaseModel):
+
+app\schemas\service.py:56
+  D:\Lynvia\backend\app\schemas\service.py:56: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class SpecializationOut(BaseModel):
+
+app\schemas\service.py:72
+  D:\Lynvia\backend\app\schemas\service.py:72: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class AvailabilityOut(BaseModel):
+
+app\schemas\service.py:83
+  D:\Lynvia\backend\app\schemas\service.py:83: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class DesignerDiscoveryOut(BaseModel):
+
+app\schemas\project.py:32
+  D:\Lynvia\backend\app\schemas\project.py:32: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class ProjectOut(BaseModel):
+
+app\schemas\portfolio.py:13
+  D:\Lynvia\backend\app\schemas\portfolio.py:13: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class MediaOut(BaseModel):
+
+app\schemas\portfolio.py:43
+  D:\Lynvia\backend\app\schemas\portfolio.py:43: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class PortfolioOut(BaseModel):
+
+app\schemas\workspace.py:34
+  D:\Lynvia\backend\app\schemas\workspace.py:34: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class MilestoneOut(MilestoneBase):
+
+app\schemas\workspace.py:68
+  D:\Lynvia\backend\app\schemas\workspace.py:68: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class TaskOut(TaskBase):
+
+app\schemas\workspace.py:93
+  D:\Lynvia\backend\app\schemas\workspace.py:93: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class FileMetadataOut(FileMetadataBase):
+
+app\schemas\workspace.py:115
+  D:\Lynvia\backend\app\schemas\workspace.py:115: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class ProjectEventOut(ProjectEventBase):
+
+app\schemas\workspace.py:137
+  D:\Lynvia\backend\app\schemas\workspace.py:137: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class RevisionOut(RevisionBase):
+
+app\schemas\workspace.py:158
+  D:\Lynvia\backend\app\schemas\workspace.py:158: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class DeliveryOut(DeliveryBase):
+
+app\schemas\workspace.py:174
+  D:\Lynvia\backend\app\schemas\workspace.py:174: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class ProjectWorkspaceOut(BaseModel):
+
+app\schemas\invitation.py:18
+  D:\Lynvia\backend\app\schemas\invitation.py:18: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class InvitationOut(BaseModel):
+
+tests/test_chat.py: 25 warnings
+  C:\Users\Viswa\AppData\Local\Programs\Python\Python311\Lib\site-packages\jwt\api_jwt.py:147: InsecureKeyLengthWarning: The HMAC key is 17 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+    return self._jws.encode(
+
+tests/test_chat.py: 25 warnings
+  C:\Users\Viswa\AppData\Local\Programs\Python\Python311\Lib\site-packages\jwt\api_jwt.py:368: InsecureKeyLengthWarning: The HMAC key is 17 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+    decoded = self.decode_complete(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+====================== 25 passed, 77 warnings in 52.71s =======================

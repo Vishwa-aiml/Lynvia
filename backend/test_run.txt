@@ -1,0 +1,970 @@
+﻿============================= test session starts =============================
+platform win32 -- Python 3.11.7, pytest-8.4.2, pluggy-1.6.0 -- C:\Users\Viswa\AppData\Local\Programs\Python\Python311\python.exe
+cachedir: .pytest_cache
+rootdir: D:\Lynvia\backend
+plugins: anyio-4.13.0
+collecting ... collected 90 items
+
+tests/test_auth.py::test_register_and_login PASSED                       [  1%]
+tests/test_auth_full.py::test_register_client PASSED                     [  2%]
+tests/test_auth_full.py::test_register_designer PASSED                   [  3%]
+tests/test_auth_full.py::test_register_default_role_is_client PASSED     [  4%]
+tests/test_auth_full.py::test_register_admin_blocked PASSED              [  5%]
+tests/test_auth_full.py::test_register_duplicate_email PASSED            [  6%]
+tests/test_auth_full.py::test_register_short_password PASSED             [  7%]
+tests/test_auth_full.py::test_login_success PASSED                       [  8%]
+tests/test_auth_full.py::test_login_wrong_password PASSED                [ 10%]
+tests/test_auth_full.py::test_login_nonexistent_user PASSED              [ 11%]
+tests/test_auth_full.py::test_login_inactive_user PASSED                 [ 12%]
+tests/test_auth_full.py::test_get_me_success PASSED                      [ 13%]
+tests/test_auth_full.py::test_get_me_invalid_token PASSED                [ 14%]
+tests/test_auth_full.py::test_get_me_missing_token PASSED                [ 15%]
+tests/test_auth_full.py::test_get_me_expired_token PASSED                [ 16%]
+tests/test_auth_full.py::test_client_cannot_create_designer_profile PASSED [ 17%]
+tests/test_auth_full.py::test_designer_cannot_create_client_profile PASSED [ 18%]
+tests/test_auth_full.py::test_designer_cannot_create_project PASSED      [ 20%]
+tests/test_auth_v2.py::test_register PASSED                              [ 21%]
+tests/test_auth_v2.py::test_register_duplicate_email PASSED              [ 22%]
+tests/test_auth_v2.py::test_register_short_password PASSED               [ 23%]
+tests/test_auth_v2.py::test_login PASSED                                 [ 24%]
+tests/test_auth_v2.py::test_login_wrong_password PASSED                  [ 25%]
+tests/test_auth_v2.py::test_login_nonexistent_user PASSED                [ 26%]
+tests/test_chat.py::test_conversation_created_for_valid_project FAILED   [ 27%]
+tests/test_chat.py::test_conversation_no_duplicate FAILED                [ 28%]
+tests/test_chat.py::test_designer_can_access_conversation FAILED         [ 30%]
+tests/test_chat.py::test_unrelated_client_rejected FAILED                [ 31%]
+tests/test_chat.py::test_unrelated_designer_rejected FAILED              [ 32%]
+tests/test_chat.py::test_unauthenticated_rejected FAILED                 [ 33%]
+tests/test_chat.py::test_send_and_list_messages FAILED                   [ 34%]
+tests/test_chat.py::test_empty_message_rejected FAILED                   [ 35%]
+tests/test_chat.py::test_oversized_message_rejected FAILED               [ 36%]
+tests/test_chat.py::test_correct_sender FAILED                           [ 37%]
+tests/test_chat.py::test_valid_reply FAILED                              [ 38%]
+tests/test_chat.py::test_nonexistent_reply_rejected FAILED               [ 40%]
+tests/test_chat.py::test_sender_can_delete_own_message FAILED            [ 41%]
+tests/test_chat.py::test_other_user_cannot_delete_message FAILED         [ 42%]
+tests/test_chat.py::test_deleted_message_content_redacted_in_list FAILED [ 43%]
+tests/test_chat.py::test_reply_to_deleted_message_rejected FAILED        [ 44%]
+tests/test_chat.py::test_sender_can_edit_own_message FAILED              [ 45%]
+tests/test_chat.py::test_other_user_cannot_edit_message FAILED           [ 46%]
+tests/test_chat.py::test_unread_count_and_mark_read FAILED               [ 47%]
+tests/test_chat.py::test_recipient_gets_new_message_notification FAILED  [ 48%]
+tests/test_chat.py::test_sender_does_not_get_own_message_notification FAILED [ 50%]
+tests/test_chat.py::test_notification_preference_respected FAILED        [ 51%]
+tests/test_chat.py::test_websocket_unauthenticated_rejected FAILED       [ 52%]
+tests/test_chat.py::test_websocket_authenticated_send_and_receive FAILED [ 53%]
+tests/test_chat.py::test_websocket_unauthorized_user_rejected FAILED     [ 54%]
+tests/test_discovery.py::test_discover_by_skill_and_rate PASSED          [ 55%]
+tests/test_earnings.py::test_ledger_generation_and_commission PASSED     [ 56%]
+tests/test_health.py::test_root PASSED                                   [ 57%]
+tests/test_health.py::test_health_ready PASSED                           [ 58%]
+tests/test_invitations.py::test_invite_accept_flow PASSED                [ 60%]
+tests/test_invitations.py::test_unauthorized_accept PASSED               [ 61%]
+tests/test_notifications.py::test_notification_creation_and_preferences PASSED [ 62%]
+tests/test_notifications.py::test_mark_all_as_read PASSED                [ 63%]
+tests/test_payments.py::test_create_payment_order PASSED                 [ 64%]
+tests/test_payments.py::test_verify_payment PASSED                       [ 65%]
+tests/test_portfolio.py::test_designer_portfolio_create_and_list PASSED  [ 66%]
+tests/test_portfolio.py::test_portfolio_ownership PASSED                 [ 67%]
+tests/test_profiles_v2.py::test_create_client_profile PASSED             [ 68%]
+tests/test_profiles_v2.py::test_create_client_profile_no_auth PASSED     [ 70%]
+tests/test_profiles_v2.py::test_create_client_profile_duplicate PASSED   [ 71%]
+tests/test_profiles_v2.py::test_get_client_profile PASSED                [ 72%]
+tests/test_profiles_v2.py::test_update_client_profile_unauthorized PASSED [ 73%]
+tests/test_profiles_v2.py::test_create_designer_profile PASSED           [ 74%]
+tests/test_profiles_v2.py::test_client_cannot_create_designer_profile PASSED [ 75%]
+tests/test_profiles_v2.py::test_designer_profile_rate_validation PASSED  [ 76%]
+tests/test_projects.py::test_create_project PASSED                       [ 77%]
+tests/test_projects.py::test_create_project_no_auth PASSED               [ 78%]
+tests/test_projects.py::test_designer_cannot_create_project PASSED       [ 80%]
+tests/test_projects.py::test_list_projects PASSED                        [ 81%]
+tests/test_projects.py::test_get_project_by_id PASSED                    [ 82%]
+tests/test_projects.py::test_get_nonexistent_project PASSED              [ 83%]
+tests/test_projects.py::test_update_project_title PASSED                 [ 84%]
+tests/test_projects.py::test_client_cannot_update_other_clients_project PASSED [ 85%]
+tests/test_projects.py::test_invalid_status_transition PASSED            [ 86%]
+tests/test_service.py::test_create_service PASSED                        [ 87%]
+tests/test_service.py::test_create_service_no_auth PASSED                [ 88%]
+tests/test_service.py::test_get_designer_services PASSED                 [ 90%]
+tests/test_service.py::test_list_skills PASSED                           [ 91%]
+tests/test_service.py::test_create_skill PASSED                          [ 92%]
+tests/test_workspace.py::test_unauthorized_workspace_access PASSED       [ 93%]
+tests/test_workspace.py::test_get_empty_workspace PASSED                 [ 94%]
+tests/test_workspace.py::test_milestone_crud PASSED                      [ 95%]
+tests/test_workspace.py::test_task_crud_and_assignment PASSED            [ 96%]
+tests/test_workspace.py::test_delivery_lifecycle PASSED                  [ 97%]
+tests/test_workspace.py::test_collaboration_events PASSED                [ 98%]
+tests/test_workspace.py::test_completed_project_restrictions PASSED      [100%]
+
+================================== FAILURES ===================================
+_________________ test_conversation_created_for_valid_project _________________
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F5020D0>
+db = <sqlalchemy.orm.session.Session object at 0x0000020E1F501CD0>
+
+    def test_conversation_created_for_valid_project(client: TestClient, db: Session):
+>       project_id, c_hdrs, d_hdrs, *_ = setup_project_with_designer(client, db)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_chat.py:87: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_chat.py:74: in setup_project_with_designer
+    c_id, c_tok, c_hdrs = register_and_login(client, "chatclient@test.com", role="client")
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F5020D0>
+email = 'chatclient@test.com', password = 'password123', full_name = 'Test User'
+role = 'client'
+
+    def register_and_login(client, email, password="password123", full_name="Test User", role="client"):
+        r = client.post("/auth/register", json={"email": email, "password": password, "full_name": full_name, "role": role})
+>       assert r.status_code == 201, r.json()
+E       AssertionError: {'detail': [{'ctx': {'expected': "'CLIENT', 'DESIGNER' or 'ADMIN'"}, 'input': 'client', 'loc': ['body', 'role'], 'msg': "Input should be 'CLIENT', 'DESIGNER' or 'ADMIN'", ...}]}
+E       assert 422 == 201
+E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+
+tests\test_chat.py:31: AssertionError
+_______________________ test_conversation_no_duplicate ________________________
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F518DD0>
+db = <sqlalchemy.orm.session.Session object at 0x0000020E1F519690>
+
+    def test_conversation_no_duplicate(client: TestClient, db: Session):
+>       project_id, c_hdrs, d_hdrs, *_ = setup_project_with_designer(client, db)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_chat.py:98: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_chat.py:74: in setup_project_with_designer
+    c_id, c_tok, c_hdrs = register_and_login(client, "chatclient@test.com", role="client")
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F518DD0>
+email = 'chatclient@test.com', password = 'password123', full_name = 'Test User'
+role = 'client'
+
+    def register_and_login(client, email, password="password123", full_name="Test User", role="client"):
+        r = client.post("/auth/register", json={"email": email, "password": password, "full_name": full_name, "role": role})
+>       assert r.status_code == 201, r.json()
+E       AssertionError: {'detail': [{'ctx': {'expected': "'CLIENT', 'DESIGNER' or 'ADMIN'"}, 'input': 'client', 'loc': ['body', 'role'], 'msg': "Input should be 'CLIENT', 'DESIGNER' or 'ADMIN'", ...}]}
+E       assert 422 == 201
+E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+
+tests\test_chat.py:31: AssertionError
+____________________ test_designer_can_access_conversation ____________________
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F4BD890>
+db = <sqlalchemy.orm.session.Session object at 0x0000020E1F4BCD50>
+
+    def test_designer_can_access_conversation(client: TestClient, db: Session):
+>       project_id, c_hdrs, d_hdrs, *_ = setup_project_with_designer(client, db)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_chat.py:106: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_chat.py:74: in setup_project_with_designer
+    c_id, c_tok, c_hdrs = register_and_login(client, "chatclient@test.com", role="client")
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F4BD890>
+email = 'chatclient@test.com', password = 'password123', full_name = 'Test User'
+role = 'client'
+
+    def register_and_login(client, email, password="password123", full_name="Test User", role="client"):
+        r = client.post("/auth/register", json={"email": email, "password": password, "full_name": full_name, "role": role})
+>       assert r.status_code == 201, r.json()
+E       AssertionError: {'detail': [{'ctx': {'expected': "'CLIENT', 'DESIGNER' or 'ADMIN'"}, 'input': 'client', 'loc': ['body', 'role'], 'msg': "Input should be 'CLIENT', 'DESIGNER' or 'ADMIN'", ...}]}
+E       assert 422 == 201
+E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+
+tests\test_chat.py:31: AssertionError
+_______________________ test_unrelated_client_rejected ________________________
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F4F5A90>
+db = <sqlalchemy.orm.session.Session object at 0x0000020E1F4F4DD0>
+
+    def test_unrelated_client_rejected(client: TestClient, db: Session):
+>       project_id, c_hdrs, d_hdrs, *_ = setup_project_with_designer(client, db)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_chat.py:116: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_chat.py:74: in setup_project_with_designer
+    c_id, c_tok, c_hdrs = register_and_login(client, "chatclient@test.com", role="client")
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F4F5A90>
+email = 'chatclient@test.com', password = 'password123', full_name = 'Test User'
+role = 'client'
+
+    def register_and_login(client, email, password="password123", full_name="Test User", role="client"):
+        r = client.post("/auth/register", json={"email": email, "password": password, "full_name": full_name, "role": role})
+>       assert r.status_code == 201, r.json()
+E       AssertionError: {'detail': [{'ctx': {'expected': "'CLIENT', 'DESIGNER' or 'ADMIN'"}, 'input': 'client', 'loc': ['body', 'role'], 'msg': "Input should be 'CLIENT', 'DESIGNER' or 'ADMIN'", ...}]}
+E       assert 422 == 201
+E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+
+tests\test_chat.py:31: AssertionError
+______________________ test_unrelated_designer_rejected _______________________
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F4F4190>
+db = <sqlalchemy.orm.session.Session object at 0x0000020E1F4F6050>
+
+    def test_unrelated_designer_rejected(client: TestClient, db: Session):
+>       project_id, c_hdrs, d_hdrs, *_ = setup_project_with_designer(client, db)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_chat.py:123: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_chat.py:74: in setup_project_with_designer
+    c_id, c_tok, c_hdrs = register_and_login(client, "chatclient@test.com", role="client")
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F4F4190>
+email = 'chatclient@test.com', password = 'password123', full_name = 'Test User'
+role = 'client'
+
+    def register_and_login(client, email, password="password123", full_name="Test User", role="client"):
+        r = client.post("/auth/register", json={"email": email, "password": password, "full_name": full_name, "role": role})
+>       assert r.status_code == 201, r.json()
+E       AssertionError: {'detail': [{'ctx': {'expected': "'CLIENT', 'DESIGNER' or 'ADMIN'"}, 'input': 'client', 'loc': ['body', 'role'], 'msg': "Input should be 'CLIENT', 'DESIGNER' or 'ADMIN'", ...}]}
+E       assert 422 == 201
+E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+
+tests\test_chat.py:31: AssertionError
+________________________ test_unauthenticated_rejected ________________________
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F4DC7D0>
+db = <sqlalchemy.orm.session.Session object at 0x0000020E1F4DD310>
+
+    def test_unauthenticated_rejected(client: TestClient, db: Session):
+>       project_id, c_hdrs, d_hdrs, *_ = setup_project_with_designer(client, db)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_chat.py:130: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_chat.py:74: in setup_project_with_designer
+    c_id, c_tok, c_hdrs = register_and_login(client, "chatclient@test.com", role="client")
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F4DC7D0>
+email = 'chatclient@test.com', password = 'password123', full_name = 'Test User'
+role = 'client'
+
+    def register_and_login(client, email, password="password123", full_name="Test User", role="client"):
+        r = client.post("/auth/register", json={"email": email, "password": password, "full_name": full_name, "role": role})
+>       assert r.status_code == 201, r.json()
+E       AssertionError: {'detail': [{'ctx': {'expected': "'CLIENT', 'DESIGNER' or 'ADMIN'"}, 'input': 'client', 'loc': ['body', 'role'], 'msg': "Input should be 'CLIENT', 'DESIGNER' or 'ADMIN'", ...}]}
+E       assert 422 == 201
+E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+
+tests\test_chat.py:31: AssertionError
+_________________________ test_send_and_list_messages _________________________
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F4D5F90>
+db = <sqlalchemy.orm.session.Session object at 0x0000020E1F4D6E10>
+
+    def test_send_and_list_messages(client: TestClient, db: Session):
+>       project_id, c_hdrs, d_hdrs, *_ = setup_project_with_designer(client, db)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_chat.py:140: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_chat.py:74: in setup_project_with_designer
+    c_id, c_tok, c_hdrs = register_and_login(client, "chatclient@test.com", role="client")
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F4D5F90>
+email = 'chatclient@test.com', password = 'password123', full_name = 'Test User'
+role = 'client'
+
+    def register_and_login(client, email, password="password123", full_name="Test User", role="client"):
+        r = client.post("/auth/register", json={"email": email, "password": password, "full_name": full_name, "role": role})
+>       assert r.status_code == 201, r.json()
+E       AssertionError: {'detail': [{'ctx': {'expected': "'CLIENT', 'DESIGNER' or 'ADMIN'"}, 'input': 'client', 'loc': ['body', 'role'], 'msg': "Input should be 'CLIENT', 'DESIGNER' or 'ADMIN'", ...}]}
+E       assert 422 == 201
+E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+
+tests\test_chat.py:31: AssertionError
+_________________________ test_empty_message_rejected _________________________
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F4D8790>
+db = <sqlalchemy.orm.session.Session object at 0x0000020E1F4DB750>
+
+    def test_empty_message_rejected(client: TestClient, db: Session):
+>       project_id, c_hdrs, *_ = setup_project_with_designer(client, db)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_chat.py:170: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_chat.py:74: in setup_project_with_designer
+    c_id, c_tok, c_hdrs = register_and_login(client, "chatclient@test.com", role="client")
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F4D8790>
+email = 'chatclient@test.com', password = 'password123', full_name = 'Test User'
+role = 'client'
+
+    def register_and_login(client, email, password="password123", full_name="Test User", role="client"):
+        r = client.post("/auth/register", json={"email": email, "password": password, "full_name": full_name, "role": role})
+>       assert r.status_code == 201, r.json()
+E       AssertionError: {'detail': [{'ctx': {'expected': "'CLIENT', 'DESIGNER' or 'ADMIN'"}, 'input': 'client', 'loc': ['body', 'role'], 'msg': "Input should be 'CLIENT', 'DESIGNER' or 'ADMIN'", ...}]}
+E       assert 422 == 201
+E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+
+tests\test_chat.py:31: AssertionError
+_______________________ test_oversized_message_rejected _______________________
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F503B50>
+db = <sqlalchemy.orm.session.Session object at 0x0000020E1F5036D0>
+
+    def test_oversized_message_rejected(client: TestClient, db: Session):
+>       project_id, c_hdrs, *_ = setup_project_with_designer(client, db)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_chat.py:181: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_chat.py:74: in setup_project_with_designer
+    c_id, c_tok, c_hdrs = register_and_login(client, "chatclient@test.com", role="client")
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F503B50>
+email = 'chatclient@test.com', password = 'password123', full_name = 'Test User'
+role = 'client'
+
+    def register_and_login(client, email, password="password123", full_name="Test User", role="client"):
+        r = client.post("/auth/register", json={"email": email, "password": password, "full_name": full_name, "role": role})
+>       assert r.status_code == 201, r.json()
+E       AssertionError: {'detail': [{'ctx': {'expected': "'CLIENT', 'DESIGNER' or 'ADMIN'"}, 'input': 'client', 'loc': ['body', 'role'], 'msg': "Input should be 'CLIENT', 'DESIGNER' or 'ADMIN'", ...}]}
+E       assert 422 == 201
+E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+
+tests\test_chat.py:31: AssertionError
+_____________________________ test_correct_sender _____________________________
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F524910>
+db = <sqlalchemy.orm.session.Session object at 0x0000020E1F502ED0>
+
+    def test_correct_sender(client: TestClient, db: Session):
+>       project_id, c_hdrs, d_hdrs, *_ = setup_project_with_designer(client, db)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_chat.py:191: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_chat.py:74: in setup_project_with_designer
+    c_id, c_tok, c_hdrs = register_and_login(client, "chatclient@test.com", role="client")
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F524910>
+email = 'chatclient@test.com', password = 'password123', full_name = 'Test User'
+role = 'client'
+
+    def register_and_login(client, email, password="password123", full_name="Test User", role="client"):
+        r = client.post("/auth/register", json={"email": email, "password": password, "full_name": full_name, "role": role})
+>       assert r.status_code == 201, r.json()
+E       AssertionError: {'detail': [{'ctx': {'expected': "'CLIENT', 'DESIGNER' or 'ADMIN'"}, 'input': 'client', 'loc': ['body', 'role'], 'msg': "Input should be 'CLIENT', 'DESIGNER' or 'ADMIN'", ...}]}
+E       assert 422 == 201
+E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+
+tests\test_chat.py:31: AssertionError
+______________________________ test_valid_reply _______________________________
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F4AD750>
+db = <sqlalchemy.orm.session.Session object at 0x0000020E1F4ACF90>
+
+    def test_valid_reply(client: TestClient, db: Session):
+>       project_id, c_hdrs, d_hdrs, *_ = setup_project_with_designer(client, db)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_chat.py:206: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_chat.py:74: in setup_project_with_designer
+    c_id, c_tok, c_hdrs = register_and_login(client, "chatclient@test.com", role="client")
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F4AD750>
+email = 'chatclient@test.com', password = 'password123', full_name = 'Test User'
+role = 'client'
+
+    def register_and_login(client, email, password="password123", full_name="Test User", role="client"):
+        r = client.post("/auth/register", json={"email": email, "password": password, "full_name": full_name, "role": role})
+>       assert r.status_code == 201, r.json()
+E       AssertionError: {'detail': [{'ctx': {'expected': "'CLIENT', 'DESIGNER' or 'ADMIN'"}, 'input': 'client', 'loc': ['body', 'role'], 'msg': "Input should be 'CLIENT', 'DESIGNER' or 'ADMIN'", ...}]}
+E       assert 422 == 201
+E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+
+tests\test_chat.py:31: AssertionError
+_______________________ test_nonexistent_reply_rejected _______________________
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F4AF450>
+db = <sqlalchemy.orm.session.Session object at 0x0000020E1F4ADE90>
+
+    def test_nonexistent_reply_rejected(client: TestClient, db: Session):
+>       project_id, c_hdrs, *_ = setup_project_with_designer(client, db)
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_chat.py:225: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_chat.py:74: in setup_project_with_designer
+    c_id, c_tok, c_hdrs = register_and_login(client, "chatclient@test.com", role="client")
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F4AF450>
+email = 'chatclient@test.com', password = 'password123', full_name = 'Test User'
+role = 'client'
+
+    def register_and_login(client, email, password="password123", full_name="Test User", role="client"):
+        r = client.post("/auth/register", json={"email": email, "password": password, "full_name": full_name, "role": role})
+>       assert r.status_code == 201, r.json()
+E       AssertionError: {'detail': [{'ctx': {'expected': "'CLIENT', 'DESIGNER' or 'ADMIN'"}, 'input': 'client', 'loc': ['body', 'role'], 'msg': "Input should be 'CLIENT', 'DESIGNER' or 'ADMIN'", ...}]}
+E       assert 422 == 201
+E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+
+tests\test_chat.py:31: AssertionError
+_____________________ test_sender_can_delete_own_message ______________________
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F4D4D50>
+db = <sqlalchemy.orm.session.Session object at 0x0000020E1F4D7C10>
+
+    def test_sender_can_delete_own_message(client: TestClient, db: Session):
+>       project_id, c_hdrs, d_hdrs, *_ = setup_project_with_designer(client, db)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_chat.py:239: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_chat.py:74: in setup_project_with_designer
+    c_id, c_tok, c_hdrs = register_and_login(client, "chatclient@test.com", role="client")
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F4D4D50>
+email = 'chatclient@test.com', password = 'password123', full_name = 'Test User'
+role = 'client'
+
+    def register_and_login(client, email, password="password123", full_name="Test User", role="client"):
+        r = client.post("/auth/register", json={"email": email, "password": password, "full_name": full_name, "role": role})
+>       assert r.status_code == 201, r.json()
+E       AssertionError: {'detail': [{'ctx': {'expected': "'CLIENT', 'DESIGNER' or 'ADMIN'"}, 'input': 'client', 'loc': ['body', 'role'], 'msg': "Input should be 'CLIENT', 'DESIGNER' or 'ADMIN'", ...}]}
+E       assert 422 == 201
+E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+
+tests\test_chat.py:31: AssertionError
+____________________ test_other_user_cannot_delete_message ____________________
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F5BFE50>
+db = <sqlalchemy.orm.session.Session object at 0x0000020E1F5BD590>
+
+    def test_other_user_cannot_delete_message(client: TestClient, db: Session):
+>       project_id, c_hdrs, d_hdrs, *_ = setup_project_with_designer(client, db)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_chat.py:255: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_chat.py:74: in setup_project_with_designer
+    c_id, c_tok, c_hdrs = register_and_login(client, "chatclient@test.com", role="client")
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F5BFE50>
+email = 'chatclient@test.com', password = 'password123', full_name = 'Test User'
+role = 'client'
+
+    def register_and_login(client, email, password="password123", full_name="Test User", role="client"):
+        r = client.post("/auth/register", json={"email": email, "password": password, "full_name": full_name, "role": role})
+>       assert r.status_code == 201, r.json()
+E       AssertionError: {'detail': [{'ctx': {'expected': "'CLIENT', 'DESIGNER' or 'ADMIN'"}, 'input': 'client', 'loc': ['body', 'role'], 'msg': "Input should be 'CLIENT', 'DESIGNER' or 'ADMIN'", ...}]}
+E       assert 422 == 201
+E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+
+tests\test_chat.py:31: AssertionError
+________________ test_deleted_message_content_redacted_in_list ________________
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F5BD710>
+db = <sqlalchemy.orm.session.Session object at 0x0000020E1F5BD2D0>
+
+    def test_deleted_message_content_redacted_in_list(client: TestClient, db: Session):
+>       project_id, c_hdrs, d_hdrs, *_ = setup_project_with_designer(client, db)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_chat.py:270: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_chat.py:74: in setup_project_with_designer
+    c_id, c_tok, c_hdrs = register_and_login(client, "chatclient@test.com", role="client")
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F5BD710>
+email = 'chatclient@test.com', password = 'password123', full_name = 'Test User'
+role = 'client'
+
+    def register_and_login(client, email, password="password123", full_name="Test User", role="client"):
+        r = client.post("/auth/register", json={"email": email, "password": password, "full_name": full_name, "role": role})
+>       assert r.status_code == 201, r.json()
+E       AssertionError: {'detail': [{'ctx': {'expected': "'CLIENT', 'DESIGNER' or 'ADMIN'"}, 'input': 'client', 'loc': ['body', 'role'], 'msg': "Input should be 'CLIENT', 'DESIGNER' or 'ADMIN'", ...}]}
+E       assert 422 == 201
+E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+
+tests\test_chat.py:31: AssertionError
+___________________ test_reply_to_deleted_message_rejected ____________________
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F64C3D0>
+db = <sqlalchemy.orm.session.Session object at 0x0000020E1F64E110>
+
+    def test_reply_to_deleted_message_rejected(client: TestClient, db: Session):
+>       project_id, c_hdrs, d_hdrs, *_ = setup_project_with_designer(client, db)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_chat.py:288: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_chat.py:74: in setup_project_with_designer
+    c_id, c_tok, c_hdrs = register_and_login(client, "chatclient@test.com", role="client")
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F64C3D0>
+email = 'chatclient@test.com', password = 'password123', full_name = 'Test User'
+role = 'client'
+
+    def register_and_login(client, email, password="password123", full_name="Test User", role="client"):
+        r = client.post("/auth/register", json={"email": email, "password": password, "full_name": full_name, "role": role})
+>       assert r.status_code == 201, r.json()
+E       AssertionError: {'detail': [{'ctx': {'expected': "'CLIENT', 'DESIGNER' or 'ADMIN'"}, 'input': 'client', 'loc': ['body', 'role'], 'msg': "Input should be 'CLIENT', 'DESIGNER' or 'ADMIN'", ...}]}
+E       assert 422 == 201
+E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+
+tests\test_chat.py:31: AssertionError
+______________________ test_sender_can_edit_own_message _______________________
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F5FE910>
+db = <sqlalchemy.orm.session.Session object at 0x0000020E1F5FE5D0>
+
+    def test_sender_can_edit_own_message(client: TestClient, db: Session):
+>       project_id, c_hdrs, d_hdrs, *_ = setup_project_with_designer(client, db)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_chat.py:311: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_chat.py:74: in setup_project_with_designer
+    c_id, c_tok, c_hdrs = register_and_login(client, "chatclient@test.com", role="client")
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F5FE910>
+email = 'chatclient@test.com', password = 'password123', full_name = 'Test User'
+role = 'client'
+
+    def register_and_login(client, email, password="password123", full_name="Test User", role="client"):
+        r = client.post("/auth/register", json={"email": email, "password": password, "full_name": full_name, "role": role})
+>       assert r.status_code == 201, r.json()
+E       AssertionError: {'detail': [{'ctx': {'expected': "'CLIENT', 'DESIGNER' or 'ADMIN'"}, 'input': 'client', 'loc': ['body', 'role'], 'msg': "Input should be 'CLIENT', 'DESIGNER' or 'ADMIN'", ...}]}
+E       assert 422 == 201
+E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+
+tests\test_chat.py:31: AssertionError
+_____________________ test_other_user_cannot_edit_message _____________________
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F5FCD50>
+db = <sqlalchemy.orm.session.Session object at 0x0000020E1F5FC8D0>
+
+    def test_other_user_cannot_edit_message(client: TestClient, db: Session):
+>       project_id, c_hdrs, d_hdrs, *_ = setup_project_with_designer(client, db)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_chat.py:330: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_chat.py:74: in setup_project_with_designer
+    c_id, c_tok, c_hdrs = register_and_login(client, "chatclient@test.com", role="client")
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F5FCD50>
+email = 'chatclient@test.com', password = 'password123', full_name = 'Test User'
+role = 'client'
+
+    def register_and_login(client, email, password="password123", full_name="Test User", role="client"):
+        r = client.post("/auth/register", json={"email": email, "password": password, "full_name": full_name, "role": role})
+>       assert r.status_code == 201, r.json()
+E       AssertionError: {'detail': [{'ctx': {'expected': "'CLIENT', 'DESIGNER' or 'ADMIN'"}, 'input': 'client', 'loc': ['body', 'role'], 'msg': "Input should be 'CLIENT', 'DESIGNER' or 'ADMIN'", ...}]}
+E       assert 422 == 201
+E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+
+tests\test_chat.py:31: AssertionError
+_______________________ test_unread_count_and_mark_read _______________________
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F5FD750>
+db = <sqlalchemy.orm.session.Session object at 0x0000020E1F1735D0>
+
+    def test_unread_count_and_mark_read(client: TestClient, db: Session):
+>       project_id, c_hdrs, d_hdrs, *_ = setup_project_with_designer(client, db)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_chat.py:352: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_chat.py:74: in setup_project_with_designer
+    c_id, c_tok, c_hdrs = register_and_login(client, "chatclient@test.com", role="client")
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F5FD750>
+email = 'chatclient@test.com', password = 'password123', full_name = 'Test User'
+role = 'client'
+
+    def register_and_login(client, email, password="password123", full_name="Test User", role="client"):
+        r = client.post("/auth/register", json={"email": email, "password": password, "full_name": full_name, "role": role})
+>       assert r.status_code == 201, r.json()
+E       AssertionError: {'detail': [{'ctx': {'expected': "'CLIENT', 'DESIGNER' or 'ADMIN'"}, 'input': 'client', 'loc': ['body', 'role'], 'msg': "Input should be 'CLIENT', 'DESIGNER' or 'ADMIN'", ...}]}
+E       assert 422 == 201
+E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+
+tests\test_chat.py:31: AssertionError
+________________ test_recipient_gets_new_message_notification _________________
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F5FD150>
+db = <sqlalchemy.orm.session.Session object at 0x0000020E1F5FD590>
+
+    def test_recipient_gets_new_message_notification(client: TestClient, db: Session):
+>       project_id, c_hdrs, d_hdrs, c_id, d_id_tok = setup_project_with_designer(client, db)
+                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_chat.py:382: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_chat.py:74: in setup_project_with_designer
+    c_id, c_tok, c_hdrs = register_and_login(client, "chatclient@test.com", role="client")
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F5FD150>
+email = 'chatclient@test.com', password = 'password123', full_name = 'Test User'
+role = 'client'
+
+    def register_and_login(client, email, password="password123", full_name="Test User", role="client"):
+        r = client.post("/auth/register", json={"email": email, "password": password, "full_name": full_name, "role": role})
+>       assert r.status_code == 201, r.json()
+E       AssertionError: {'detail': [{'ctx': {'expected': "'CLIENT', 'DESIGNER' or 'ADMIN'"}, 'input': 'client', 'loc': ['body', 'role'], 'msg': "Input should be 'CLIENT', 'DESIGNER' or 'ADMIN'", ...}]}
+E       assert 422 == 201
+E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+
+tests\test_chat.py:31: AssertionError
+______________ test_sender_does_not_get_own_message_notification ______________
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F65F6D0>
+db = <sqlalchemy.orm.session.Session object at 0x0000020E1F65DCD0>
+
+    def test_sender_does_not_get_own_message_notification(client: TestClient, db: Session):
+>       project_id, c_hdrs, d_hdrs, *_ = setup_project_with_designer(client, db)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_chat.py:401: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_chat.py:74: in setup_project_with_designer
+    c_id, c_tok, c_hdrs = register_and_login(client, "chatclient@test.com", role="client")
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F65F6D0>
+email = 'chatclient@test.com', password = 'password123', full_name = 'Test User'
+role = 'client'
+
+    def register_and_login(client, email, password="password123", full_name="Test User", role="client"):
+        r = client.post("/auth/register", json={"email": email, "password": password, "full_name": full_name, "role": role})
+>       assert r.status_code == 201, r.json()
+E       AssertionError: {'detail': [{'ctx': {'expected': "'CLIENT', 'DESIGNER' or 'ADMIN'"}, 'input': 'client', 'loc': ['body', 'role'], 'msg': "Input should be 'CLIENT', 'DESIGNER' or 'ADMIN'", ...}]}
+E       assert 422 == 201
+E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+
+tests\test_chat.py:31: AssertionError
+___________________ test_notification_preference_respected ____________________
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F65E690>
+db = <sqlalchemy.orm.session.Session object at 0x0000020E1F65CE50>
+
+    def test_notification_preference_respected(client: TestClient, db: Session):
+>       project_id, c_hdrs, d_hdrs, *_ = setup_project_with_designer(client, db)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_chat.py:420: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_chat.py:74: in setup_project_with_designer
+    c_id, c_tok, c_hdrs = register_and_login(client, "chatclient@test.com", role="client")
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F65E690>
+email = 'chatclient@test.com', password = 'password123', full_name = 'Test User'
+role = 'client'
+
+    def register_and_login(client, email, password="password123", full_name="Test User", role="client"):
+        r = client.post("/auth/register", json={"email": email, "password": password, "full_name": full_name, "role": role})
+>       assert r.status_code == 201, r.json()
+E       AssertionError: {'detail': [{'ctx': {'expected': "'CLIENT', 'DESIGNER' or 'ADMIN'"}, 'input': 'client', 'loc': ['body', 'role'], 'msg': "Input should be 'CLIENT', 'DESIGNER' or 'ADMIN'", ...}]}
+E       assert 422 == 201
+E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+
+tests\test_chat.py:31: AssertionError
+___________________ test_websocket_unauthenticated_rejected ___________________
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F4F73D0>
+db = <sqlalchemy.orm.session.Session object at 0x0000020E1F4F75D0>
+
+    def test_websocket_unauthenticated_rejected(client: TestClient, db: Session):
+>       project_id, c_hdrs, d_hdrs, *_ = setup_project_with_designer(client, db)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_chat.py:446: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_chat.py:74: in setup_project_with_designer
+    c_id, c_tok, c_hdrs = register_and_login(client, "chatclient@test.com", role="client")
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F4F73D0>
+email = 'chatclient@test.com', password = 'password123', full_name = 'Test User'
+role = 'client'
+
+    def register_and_login(client, email, password="password123", full_name="Test User", role="client"):
+        r = client.post("/auth/register", json={"email": email, "password": password, "full_name": full_name, "role": role})
+>       assert r.status_code == 201, r.json()
+E       AssertionError: {'detail': [{'ctx': {'expected': "'CLIENT', 'DESIGNER' or 'ADMIN'"}, 'input': 'client', 'loc': ['body', 'role'], 'msg': "Input should be 'CLIENT', 'DESIGNER' or 'ADMIN'", ...}]}
+E       assert 422 == 201
+E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+
+tests\test_chat.py:31: AssertionError
+________________ test_websocket_authenticated_send_and_receive ________________
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F4BEBD0>
+db = <sqlalchemy.orm.session.Session object at 0x0000020E1F4F5A90>
+
+    def test_websocket_authenticated_send_and_receive(client: TestClient, db: Session):
+>       project_id, c_hdrs, d_hdrs, c_tok, d_tok = setup_project_with_designer(client, db)
+                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_chat.py:459: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_chat.py:74: in setup_project_with_designer
+    c_id, c_tok, c_hdrs = register_and_login(client, "chatclient@test.com", role="client")
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F4BEBD0>
+email = 'chatclient@test.com', password = 'password123', full_name = 'Test User'
+role = 'client'
+
+    def register_and_login(client, email, password="password123", full_name="Test User", role="client"):
+        r = client.post("/auth/register", json={"email": email, "password": password, "full_name": full_name, "role": role})
+>       assert r.status_code == 201, r.json()
+E       AssertionError: {'detail': [{'ctx': {'expected': "'CLIENT', 'DESIGNER' or 'ADMIN'"}, 'input': 'client', 'loc': ['body', 'role'], 'msg': "Input should be 'CLIENT', 'DESIGNER' or 'ADMIN'", ...}]}
+E       assert 422 == 201
+E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+
+tests\test_chat.py:31: AssertionError
+__________________ test_websocket_unauthorized_user_rejected __________________
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F609DD0>
+db = <sqlalchemy.orm.session.Session object at 0x0000020E1F609D10>
+
+    def test_websocket_unauthorized_user_rejected(client: TestClient, db: Session):
+>       project_id, c_hdrs, d_hdrs, *_ = setup_project_with_designer(client, db)
+                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests\test_chat.py:476: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+tests\test_chat.py:74: in setup_project_with_designer
+    c_id, c_tok, c_hdrs = register_and_login(client, "chatclient@test.com", role="client")
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+client = <starlette.testclient.TestClient object at 0x0000020E1F609DD0>
+email = 'chatclient@test.com', password = 'password123', full_name = 'Test User'
+role = 'client'
+
+    def register_and_login(client, email, password="password123", full_name="Test User", role="client"):
+        r = client.post("/auth/register", json={"email": email, "password": password, "full_name": full_name, "role": role})
+>       assert r.status_code == 201, r.json()
+E       AssertionError: {'detail': [{'ctx': {'expected': "'CLIENT', 'DESIGNER' or 'ADMIN'"}, 'input': 'client', 'loc': ['body', 'role'], 'msg': "Input should be 'CLIENT', 'DESIGNER' or 'ADMIN'", ...}]}
+E       assert 422 == 201
+E        +  where 422 = <Response [422 Unprocessable Entity]>.status_code
+
+tests\test_chat.py:31: AssertionError
+============================== warnings summary ===============================
+app\core\config.py:6
+  D:\Lynvia\backend\app\core\config.py:6: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class Settings(BaseSettings):
+
+app\schemas\auth.py:13
+  D:\Lynvia\backend\app\schemas\auth.py:13: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class UserOut(BaseModel):
+
+C:\Users\Viswa\AppData\Local\Programs\Python\Python311\Lib\site-packages\pydantic\_internal\_config.py:386
+C:\Users\Viswa\AppData\Local\Programs\Python\Python311\Lib\site-packages\pydantic\_internal\_config.py:386
+C:\Users\Viswa\AppData\Local\Programs\Python\Python311\Lib\site-packages\pydantic\_internal\_config.py:386
+C:\Users\Viswa\AppData\Local\Programs\Python\Python311\Lib\site-packages\pydantic\_internal\_config.py:386
+C:\Users\Viswa\AppData\Local\Programs\Python\Python311\Lib\site-packages\pydantic\_internal\_config.py:386
+C:\Users\Viswa\AppData\Local\Programs\Python\Python311\Lib\site-packages\pydantic\_internal\_config.py:386
+C:\Users\Viswa\AppData\Local\Programs\Python\Python311\Lib\site-packages\pydantic\_internal\_config.py:386
+  C:\Users\Viswa\AppData\Local\Programs\Python\Python311\Lib\site-packages\pydantic\_internal\_config.py:386: UserWarning: Valid config keys have changed in V2:
+  * 'orm_mode' has been renamed to 'from_attributes'
+    warnings.warn(message, UserWarning)
+
+app\schemas\profile.py:19
+  D:\Lynvia\backend\app\schemas\profile.py:19: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class ClientProfileOut(BaseModel):
+
+app\schemas\profile.py:49
+  D:\Lynvia\backend\app\schemas\profile.py:49: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class DesignerProfileOut(BaseModel):
+
+app\schemas\service.py:11
+  D:\Lynvia\backend\app\schemas\service.py:11: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class SkillOut(BaseModel):
+
+app\schemas\service.py:37
+  D:\Lynvia\backend\app\schemas\service.py:37: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class ServiceOut(BaseModel):
+
+app\schemas\service.py:56
+  D:\Lynvia\backend\app\schemas\service.py:56: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class SpecializationOut(BaseModel):
+
+app\schemas\service.py:72
+  D:\Lynvia\backend\app\schemas\service.py:72: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class AvailabilityOut(BaseModel):
+
+app\schemas\service.py:83
+  D:\Lynvia\backend\app\schemas\service.py:83: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class DesignerDiscoveryOut(BaseModel):
+
+app\schemas\project.py:32
+  D:\Lynvia\backend\app\schemas\project.py:32: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class ProjectOut(BaseModel):
+
+app\schemas\portfolio.py:13
+  D:\Lynvia\backend\app\schemas\portfolio.py:13: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class MediaOut(BaseModel):
+
+app\schemas\portfolio.py:43
+  D:\Lynvia\backend\app\schemas\portfolio.py:43: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class PortfolioOut(BaseModel):
+
+app\schemas\workspace.py:34
+  D:\Lynvia\backend\app\schemas\workspace.py:34: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class MilestoneOut(MilestoneBase):
+
+app\schemas\workspace.py:68
+  D:\Lynvia\backend\app\schemas\workspace.py:68: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class TaskOut(TaskBase):
+
+app\schemas\workspace.py:93
+  D:\Lynvia\backend\app\schemas\workspace.py:93: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class FileMetadataOut(FileMetadataBase):
+
+app\schemas\workspace.py:115
+  D:\Lynvia\backend\app\schemas\workspace.py:115: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class ProjectEventOut(ProjectEventBase):
+
+app\schemas\workspace.py:137
+  D:\Lynvia\backend\app\schemas\workspace.py:137: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class RevisionOut(RevisionBase):
+
+app\schemas\workspace.py:158
+  D:\Lynvia\backend\app\schemas\workspace.py:158: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class DeliveryOut(DeliveryBase):
+
+app\schemas\workspace.py:174
+  D:\Lynvia\backend\app\schemas\workspace.py:174: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class ProjectWorkspaceOut(BaseModel):
+
+app\schemas\invitation.py:18
+  D:\Lynvia\backend\app\schemas\invitation.py:18: PydanticDeprecatedSince20: Support for class-based `config` is deprecated, use ConfigDict instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    class InvitationOut(BaseModel):
+
+tests/test_auth.py: 1 warning
+tests/test_auth_full.py: 6 warnings
+tests/test_auth_v2.py: 1 warning
+tests/test_discovery.py: 1 warning
+tests/test_invitations.py: 2 warnings
+tests/test_notifications.py: 2 warnings
+tests/test_payments.py: 2 warnings
+tests/test_portfolio.py: 2 warnings
+tests/test_profiles_v2.py: 7 warnings
+tests/test_projects.py: 7 warnings
+tests/test_service.py: 3 warnings
+tests/test_workspace.py: 7 warnings
+  C:\Users\Viswa\AppData\Local\Programs\Python\Python311\Lib\site-packages\jwt\api_jwt.py:147: InsecureKeyLengthWarning: The HMAC key is 17 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+    return self._jws.encode(
+
+tests/test_auth_full.py: 5 warnings
+tests/test_discovery.py: 1 warning
+tests/test_invitations.py: 2 warnings
+tests/test_notifications.py: 2 warnings
+tests/test_payments.py: 2 warnings
+tests/test_portfolio.py: 2 warnings
+tests/test_profiles_v2.py: 7 warnings
+tests/test_projects.py: 7 warnings
+tests/test_service.py: 3 warnings
+tests/test_workspace.py: 27 warnings
+  C:\Users\Viswa\AppData\Local\Programs\Python\Python311\Lib\site-packages\jwt\api_jwt.py:368: InsecureKeyLengthWarning: The HMAC key is 17 bytes long, which is below the minimum recommended length of 32 bytes for SHA256. See RFC 7518 Section 3.2.
+    decoded = self.decode_complete(
+
+tests/test_discovery.py::test_discover_by_skill_and_rate
+  D:\Lynvia\backend\app\services\discovery.py:50: SAWarning: Coercing Subquery object into a select() for use in IN(); please pass a select() construct explicitly
+    q = q.filter(DesignerProfile.id.in_(ds_subq))
+
+tests/test_projects.py::test_update_project_title
+tests/test_projects.py::test_invalid_status_transition
+  D:\Lynvia\backend\app\services\project.py:52: PydanticDeprecatedSince20: The `dict` method is deprecated; use `model_dump` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    update_data = project_in.dict(exclude_unset=True)
+
+tests/test_workspace.py::test_unauthorized_workspace_access
+tests/test_workspace.py::test_get_empty_workspace
+tests/test_workspace.py::test_milestone_crud
+tests/test_workspace.py::test_task_crud_and_assignment
+tests/test_workspace.py::test_delivery_lifecycle
+tests/test_workspace.py::test_collaboration_events
+tests/test_workspace.py::test_completed_project_restrictions
+  D:\Lynvia\backend\tests\test_workspace.py:61: LegacyAPIWarning: The Query.get() method is considered legacy as of the 1.x series of SQLAlchemy and becomes a legacy construct in 2.0. The method is now available as Session.get() (deprecated since: 2.0) (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+    project = db.query(Project).get(project_id)
+
+tests/test_workspace.py::test_milestone_crud
+  D:\Lynvia\backend\app\services\workspace.py:95: PydanticDeprecatedSince20: The `dict` method is deprecated; use `model_dump` instead. Deprecated in Pydantic V2.0 to be removed in V3.0. See Pydantic V2 Migration Guide at https://errors.pydantic.dev/2.13/migration/
+    update_data = milestone_in.dict(exclude_unset=True)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ===========================
+FAILED tests/test_chat.py::test_conversation_created_for_valid_project - Asse...
+FAILED tests/test_chat.py::test_conversation_no_duplicate - AssertionError: {...
+FAILED tests/test_chat.py::test_designer_can_access_conversation - AssertionE...
+FAILED tests/test_chat.py::test_unrelated_client_rejected - AssertionError: {...
+FAILED tests/test_chat.py::test_unrelated_designer_rejected - AssertionError:...
+FAILED tests/test_chat.py::test_unauthenticated_rejected - AssertionError: {'...
+FAILED tests/test_chat.py::test_send_and_list_messages - AssertionError: {'de...
+FAILED tests/test_chat.py::test_empty_message_rejected - AssertionError: {'de...
+FAILED tests/test_chat.py::test_oversized_message_rejected - AssertionError: ...
+FAILED tests/test_chat.py::test_correct_sender - AssertionError: {'detail': [...
+FAILED tests/test_chat.py::test_valid_reply - AssertionError: {'detail': [{'c...
+FAILED tests/test_chat.py::test_nonexistent_reply_rejected - AssertionError: ...
+FAILED tests/test_chat.py::test_sender_can_delete_own_message - AssertionErro...
+FAILED tests/test_chat.py::test_other_user_cannot_delete_message - AssertionE...
+FAILED tests/test_chat.py::test_deleted_message_content_redacted_in_list - As...
+FAILED tests/test_chat.py::test_reply_to_deleted_message_rejected - Assertion...
+FAILED tests/test_chat.py::test_sender_can_edit_own_message - AssertionError:...
+FAILED tests/test_chat.py::test_other_user_cannot_edit_message - AssertionErr...
+FAILED tests/test_chat.py::test_unread_count_and_mark_read - AssertionError: ...
+FAILED tests/test_chat.py::test_recipient_gets_new_message_notification - Ass...
+FAILED tests/test_chat.py::test_sender_does_not_get_own_message_notification
+FAILED tests/test_chat.py::test_notification_preference_respected - Assertion...
+FAILED tests/test_chat.py::test_websocket_unauthenticated_rejected - Assertio...
+FAILED tests/test_chat.py::test_websocket_authenticated_send_and_receive - As...
+FAILED tests/test_chat.py::test_websocket_unauthorized_user_rejected - Assert...
+================ 25 failed, 65 passed, 137 warnings in 41.07s =================

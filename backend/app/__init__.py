@@ -1,0 +1,1 @@
+"""Lynvia backend application."""

@@ -1,0 +1,79 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ivory: #faf9f6;
+  --color-ink: #111111;
+  --color-accent: #7c3aed;
+  
+  --font-display: 'Big Shoulders Display', Impact, sans-serif;
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-sans: 'Manrope', system-ui, sans-serif;
+}
+
+@layer base {
+  :root {
+    background-color: var(--color-ivory);
+    color: var(--color-ink);
+    scroll-behavior: smooth;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--color-ivory);
+    color: var(--color-ink);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif);
+    font-weight: 500;
+  }
+
+  img {
+    image-rendering: -webkit-optimize-contrast;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-ivory);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-accent);
+    border-radius: 2px;
+  }
+}
+
+@layer utilities {
+  /* Cinematic typography utilities */
+  .text-huge {
+    font-family: var(--font-display);
+    font-size: clamp(6rem, 15vw, 18rem);
+    line-height: 0.9;
+    font-weight: 900;
+    text-transform: uppercase;
+  }
+
+  .text-display-md {
+    font-family: var(--font-display);
+    font-size: clamp(4rem, 8vw, 10rem);
+    line-height: 0.9;
+    font-weight: 900;
+    text-transform: uppercase;
+  }
+
+  .text-editorial {
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 4vw, 4rem);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+  }
+}
