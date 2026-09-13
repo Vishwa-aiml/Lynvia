@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
-from app.db.session import get_db
+from google.cloud.firestore import Client as FirestoreClient
+from app.db.firebase import get_db
 from app.schemas.profile import DesignerProfileCreate, DesignerProfileUpdate, DesignerProfileOut
 from app.services import profile as profile_service
-from app.api.dependencies import get_current_user, require_designer_role
+from app.api.dependencies import require_designer_role
 from app.models.user import User
 
 router = APIRouter()
@@ -13,7 +13,7 @@ router = APIRouter()
 def create_designer_profile(
     profile_in: DesignerProfileCreate,
     current_user: User = Depends(require_designer_role),
-    db: Session = Depends(get_db),
+    db: FirestoreClient = Depends(get_db),
 ):
     """Create a designer profile. Only DESIGNER-role users may call this."""
     existing = profile_service.get_designer_profile(db, current_user.id)
@@ -23,7 +23,7 @@ def create_designer_profile(
 
 
 @router.get("/designer/{user_id}", response_model=DesignerProfileOut)
-def get_designer_profile(user_id: int, db: Session = Depends(get_db)):
+def get_designer_profile(user_id: str, db: FirestoreClient = Depends(get_db)):
     profile = profile_service.get_designer_profile(db, user_id)
     if not profile:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Profile not found")
@@ -32,10 +32,10 @@ def get_designer_profile(user_id: int, db: Session = Depends(get_db)):
 
 @router.put("/designer/{user_id}", response_model=DesignerProfileOut)
 def update_designer_profile(
-    user_id: int,
+    user_id: str,
     profile_in: DesignerProfileUpdate,
     current_user: User = Depends(require_designer_role),
-    db: Session = Depends(get_db),
+    db: FirestoreClient = Depends(get_db),
 ):
     """Update a designer profile. Only the owning DESIGNER may update their own profile."""
     if current_user.id != user_id:

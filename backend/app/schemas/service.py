@@ -9,7 +9,7 @@ class SkillCreate(BaseModel):
 
 
 class SkillOut(BaseModel):
-    id: int
+    id: str
     name: str
     description: Optional[str] = None
 
@@ -35,8 +35,8 @@ class ServiceUpdate(BaseModel):
 
 
 class ServiceOut(BaseModel):
-    id: int
-    designer_id: int
+    id: str
+    designer_id: str
     title: str
     description: Optional[str] = None
     category: str
@@ -54,8 +54,8 @@ class SpecializationCreate(BaseModel):
 
 
 class SpecializationOut(BaseModel):
-    id: int
-    designer_id: int
+    id: str
+    designer_id: str
     name: str
     description: Optional[str] = None
 
@@ -70,8 +70,8 @@ class AvailabilityCreate(BaseModel):
 
 
 class AvailabilityOut(BaseModel):
-    id: int
-    designer_id: int
+    id: str
+    designer_id: str
     day_of_week: int
     is_available: bool
     hours_per_day: Optional[int] = None
@@ -82,8 +82,8 @@ class AvailabilityOut(BaseModel):
 
 class DesignerDiscoveryOut(BaseModel):
     """Designer profile with skills and services for discovery."""
-    id: int
-    user_id: int
+    id: str
+    user_id: str
     headline: Optional[str] = None
     bio: Optional[str] = None
     location: Optional[str] = None

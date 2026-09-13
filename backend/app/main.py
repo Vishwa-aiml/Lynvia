@@ -39,12 +39,12 @@ def create_app() -> FastAPI:
     from app.api.routes.health import router as health_router
     from app.api.routes import auth as auth_router
     # from app.api.routes import users as users_router
-    # from app.api.routes import client_profile as client_profile_router
-    # from app.api.routes import designer_profile as designer_profile_router
-    # from app.api.routes import service as services_router
+    from app.api.routes import client_profile as client_profile_router
+    from app.api.routes import designer_profile as designer_profile_router
+    from app.api.routes import service as services_router
     # from app.api.routes import projects as projects_router
-    # from app.api.routes import portfolio as portfolio_router
-    # from app.api.routes import discovery as discovery_router
+    from app.api.routes import portfolio as portfolio_router
+    from app.api.routes import discovery as discovery_router
     # from app.api.routes import workspace as workspace_router
     # from app.api.routes import payments as payments_router
     # from app.api.routes import earnings as earnings_router
@@ -52,11 +52,11 @@ def create_app() -> FastAPI:
     app.include_router(health_router, prefix="/health", tags=["health"])
     app.include_router(auth_router.router, prefix="/auth", tags=["auth"])
     # app.include_router(users_router.router, prefix="/users", tags=["users"])
-    # app.include_router(client_profile_router.router, prefix="/profiles", tags=["profiles"])
-    # app.include_router(designer_profile_router.router, prefix="/profiles", tags=["profiles"])
-    # app.include_router(services_router.router, prefix="/services", tags=["services"])
-    # app.include_router(portfolio_router.router, prefix="/portfolio", tags=["portfolio"])
-    # app.include_router(discovery_router.router, prefix="/discovery", tags=["discovery"])
+    app.include_router(client_profile_router.router, prefix="/profiles", tags=["profiles"])
+    app.include_router(designer_profile_router.router, prefix="/profiles", tags=["profiles"])
+    app.include_router(services_router.router, prefix="/services", tags=["services"])
+    app.include_router(portfolio_router.router, prefix="/portfolio", tags=["portfolio"])
+    app.include_router(discovery_router.router, prefix="/discovery", tags=["discovery"])
     # app.include_router(projects_router.router, prefix="/projects", tags=["projects"])
     # app.include_router(workspace_router.router, prefix="/projects/{project_id}/workspace", tags=["workspace"])
     # from app.api.routes import invitations as invitations_router

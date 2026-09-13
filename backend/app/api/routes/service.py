@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
-from app.db.session import get_db
+from google.cloud.firestore import Client as FirestoreClient
+from app.db.firebase import get_db
 from app.schemas.service import (
     ServiceCreate, ServiceUpdate, ServiceOut,
     SkillCreate, SkillOut,
@@ -19,28 +19,28 @@ router = APIRouter()
 def create_service(
     service_in: ServiceCreate,
     current_user: User = Depends(require_designer_role),
-    db: Session = Depends(get_db),
+    db: FirestoreClient = Depends(get_db),
 ):
     # Ensure the designer has a profile and use its id as designer_id
     designer_profile = profile_svc.get_designer_profile(db, current_user.id)
     if not designer_profile:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Designer profile not found")
-    return service_svc.create_service(db, designer_profile.id, service_in)
+    return service_svc.create_service(db, designer_profile['id'], service_in)
 
 
 @router.get("/designers/{designer_id}/services", response_model=list[ServiceOut])
-def list_designer_services(designer_id: int, db: Session = Depends(get_db)):
+def list_designer_services(designer_id: str, db: FirestoreClient = Depends(get_db)):
     services = service_svc.get_designer_services(db, designer_id)
     return services
 
 
 @router.get("/skills", response_model=list[SkillOut])
-def list_skills(db: Session = Depends(get_db)):
+def list_skills(db: FirestoreClient = Depends(get_db)):
     return service_svc.get_all_skills(db)
 
 
 @router.post("/skills", response_model=SkillOut, status_code=status.HTTP_201_CREATED)
-def create_skill(skill_in: SkillCreate, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):
+def create_skill(skill_in: SkillCreate, current_user: User = Depends(get_current_user), db: FirestoreClient = Depends(get_db)):
     """Create a skill and, if the caller is a designer, associate it to their profile."""
     from app.models.user import UserRole
 
@@ -50,14 +50,14 @@ def create_skill(skill_in: SkillCreate, current_user: User = Depends(get_current
         if current_user and current_user.role == UserRole.DESIGNER:
             designer_profile = profile_svc.get_designer_profile(db, current_user.id)
             if designer_profile:
-                service_svc.add_skill_to_designer(db, designer_profile.id, existing.id)
+                service_svc.add_skill_to_designer(db, designer_profile['id'], existing['id'])
         return existing
 
     skill = service_svc.create_skill(db, skill_in.name, skill_in.description)
     if current_user and current_user.role == UserRole.DESIGNER:
         designer_profile = profile_svc.get_designer_profile(db, current_user.id)
         if designer_profile:
-            service_svc.add_skill_to_designer(db, designer_profile.id, skill.id)
+            service_svc.add_skill_to_designer(db, designer_profile['id'], skill['id'])
     return skill
 
 
@@ -65,16 +65,16 @@ def create_skill(skill_in: SkillCreate, current_user: User = Depends(get_current
 def create_specialization(
     spec_in: SpecializationCreate,
     current_user: User = Depends(require_designer_role),
-    db: Session = Depends(get_db),
+    db: FirestoreClient = Depends(get_db),
 ):
     designer_profile = profile_svc.get_designer_profile(db, current_user.id)
     if not designer_profile:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Designer profile not found")
-    return service_svc.create_specialization(db, designer_profile.id, spec_in)
+    return service_svc.create_specialization(db, designer_profile['id'], spec_in)
 
 
 @router.get("/designers/{designer_id}/specializations", response_model=list[SpecializationOut])
-def list_designer_specializations(designer_id: int, db: Session = Depends(get_db)):
+def list_designer_specializations(designer_id: str, db: FirestoreClient = Depends(get_db)):
     return service_svc.get_designer_specializations(db, designer_id)
 
 
@@ -82,25 +82,25 @@ def list_designer_specializations(designer_id: int, db: Session = Depends(get_db
 def create_availability(
     avail_in: AvailabilityCreate,
     current_user: User = Depends(require_designer_role),
-    db: Session = Depends(get_db),
+    db: FirestoreClient = Depends(get_db),
 ):
     designer_profile = profile_svc.get_designer_profile(db, current_user.id)
     if not designer_profile:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Designer profile not found")
-    return service_svc.create_availability(db, designer_profile.id, avail_in)
+    return service_svc.create_availability(db, designer_profile['id'], avail_in)
 
 
 @router.get("/designers/{designer_id}/availability", response_model=list[AvailabilityOut])
-def list_designer_availability(designer_id: int, db: Session = Depends(get_db)):
+def list_designer_availability(designer_id: str, db: FirestoreClient = Depends(get_db)):
     return service_svc.get_designer_availability(db, designer_id)
 
 
 @router.put("/{service_id}", response_model=ServiceOut)
 def update_service(
-    service_id: int,
+    service_id: str,
     service_in: ServiceUpdate,
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
+    db: FirestoreClient = Depends(get_db),
 ):
     """Allow the service owner (designer) or ADMIN to update a service."""
     service = service_svc.get_service(db, service_id)
@@ -114,7 +114,7 @@ def update_service(
     # allow ADMIN or owner
     from app.models.user import UserRole
     if current_user.role != UserRole.ADMIN:
-        if not designer_profile or service.designer_id != designer_profile.id:
+        if not designer_profile or service.get('designer_id') != designer_profile['id']:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized to modify this service")
 
     try:

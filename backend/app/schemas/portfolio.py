@@ -11,7 +11,7 @@ class MediaCreate(BaseModel):
 
 
 class MediaOut(BaseModel):
-    id: int
+    id: str
     filename: str
     url: HttpUrl
     mime_type: Optional[str] = None
@@ -41,8 +41,8 @@ class PortfolioUpdate(BaseModel):
 
 
 class PortfolioOut(BaseModel):
-    id: int
-    designer_id: int
+    id: str
+    designer_id: str
     title: str
     description: Optional[str] = None
     category: Optional[str] = None

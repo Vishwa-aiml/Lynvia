@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, Query
 from typing import List, Optional
-from sqlalchemy.orm import Session
-from app.db.session import get_db
+from google.cloud.firestore import Client as FirestoreClient
+from app.db.firebase import get_db
 from app.services.discovery import search_designers
 from app.schemas.service import DesignerDiscoveryOut
 
@@ -21,7 +21,7 @@ def discover_designers(
     limit: int = Query(20, ge=1, le=100),
     offset: int = Query(0, ge=0),
     sort: Optional[str] = Query(None),
-    db: Session = Depends(get_db),
+    db: FirestoreClient = Depends(get_db),
 ):
     skills_list = [s.strip() for s in skills.split(",")] if skills else None
     results = search_designers(

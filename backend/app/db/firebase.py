@@ -4,7 +4,7 @@ from firebase_admin import firestore
 import os
 
 # Path to the service account JSON key provided by the user
-CREDENTIALS_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "lynvia-58164-firebase-adminsdk-fbsvc-fd7e92ca4f.json")
+CREDENTIALS_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "lynvia-58164-firebase-adminsdk-fbsvc-5e89401ea6.json")
 
 # Initialize Firebase Admin SDK
 try:

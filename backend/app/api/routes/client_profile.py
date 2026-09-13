@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.orm import Session
-from app.db.session import get_db
+from google.cloud.firestore import Client as FirestoreClient
+from app.db.firebase import get_db
 from app.schemas.profile import ClientProfileCreate, ClientProfileUpdate, ClientProfileOut
 from app.services import profile as profile_service
 from app.api.dependencies import get_current_user, require_client_role
@@ -13,7 +13,7 @@ router = APIRouter()
 def create_client_profile(
     profile_in: ClientProfileCreate,
     current_user: User = Depends(require_client_role),
-    db: Session = Depends(get_db),
+    db: FirestoreClient = Depends(get_db),
 ):
     existing = profile_service.get_client_profile(db, current_user.id)
     if existing:
@@ -25,7 +25,7 @@ def create_client_profile(
 
 
 @router.get("/client/{user_id}", response_model=ClientProfileOut)
-def get_client_profile(user_id: int, db: Session = Depends(get_db)):
+def get_client_profile(user_id: str, db: FirestoreClient = Depends(get_db)):
     profile = profile_service.get_client_profile(db, user_id)
     if not profile:
         raise HTTPException(
@@ -37,10 +37,10 @@ def get_client_profile(user_id: int, db: Session = Depends(get_db)):
 
 @router.put("/client/{user_id}", response_model=ClientProfileOut)
 def update_client_profile(
-    user_id: int,
+    user_id: str,
     profile_in: ClientProfileUpdate,
     current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
+    db: FirestoreClient = Depends(get_db),
 ):
     if current_user.id != user_id:
         raise HTTPException(

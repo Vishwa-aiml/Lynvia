@@ -1,105 +1,105 @@
-from sqlalchemy.orm import Session
-from app.models.portfolio import PortfolioItem, PortfolioMedia
+from google.cloud.firestore import Client as FirestoreClient
 from app.schemas.portfolio import PortfolioCreate, PortfolioUpdate, MediaCreate
+from google.cloud.firestore_v1.base_query import FieldFilter
+from datetime import datetime
+import uuid
 
+def create_portfolio_item(db: FirestoreClient, designer_id: str, item_in: PortfolioCreate):
+    item_data = item_in.dict()
+    item_data['designer_id'] = designer_id
+    item_data['is_public'] = item_data.get('is_public', True)
+    item_data['created_at'] = datetime.utcnow().isoformat()
+    item_data['updated_at'] = datetime.utcnow().isoformat()
+    
+    if item_data.get('media'):
+        for idx, m in enumerate(item_data['media']):
+            m['id'] = str(uuid.uuid4())
+            if m.get('sort_order') is None:
+                m['sort_order'] = idx
+            m['url'] = str(m['url'])
 
-def create_portfolio_item(db: Session, designer_id: int, item_in: PortfolioCreate) -> PortfolioItem:
-    item = PortfolioItem(
-        designer_id=designer_id,
-        title=item_in.title,
-        description=item_in.description,
-        category=item_in.category,
-        project_reference=item_in.project_reference,
-        is_public=item_in.is_public if item_in.is_public is not None else True,
-    )
-    db.add(item)
-    db.commit()
-    db.refresh(item)
+    doc_ref = db.collection("portfolio_items").document()
+    db.collection("portfolio_items").document(doc_ref.id).set(item_data)
+    item_data['id'] = doc_ref.id
+    return item_data
 
-    # add media if provided
-    if item_in.media:
-        for idx, m in enumerate(item_in.media):
-            media = PortfolioMedia(
-                portfolio_id=item.id,
-                filename=m.filename,
-                url=str(m.url),
-                mime_type=m.mime_type,
-                sort_order=m.sort_order if m.sort_order is not None else idx,
-            )
-            db.add(media)
-        db.commit()
-        db.refresh(item)
-    return item
+def get_portfolio_item(db: FirestoreClient, item_id: str):
+    doc = db.collection("portfolio_items").document(item_id).get()
+    if doc.exists:
+        data = doc.to_dict()
+        data["id"] = doc.id
+        return data
+    return None
 
-
-def get_portfolio_item(db: Session, item_id: int) -> PortfolioItem | None:
-    return db.query(PortfolioItem).filter(PortfolioItem.id == item_id).first()
-
-
-def list_designer_portfolio(db: Session, designer_id: int, public_only: bool = True, limit: int = 20, offset: int = 0) -> list[PortfolioItem]:
-    q = db.query(PortfolioItem).filter(PortfolioItem.designer_id == designer_id)
+def list_designer_portfolio(db: FirestoreClient, designer_id: str, public_only: bool = True, limit: int = 20, offset: int = 0):
+    query = db.collection("portfolio_items").where(filter=FieldFilter("designer_id", "==", designer_id))
     if public_only:
-        q = q.filter(PortfolioItem.is_public == True)
-    return q.order_by(PortfolioItem.created_at.desc()).limit(limit).offset(offset).all()
+        query = query.where(filter=FieldFilter("is_public", "==", True))
+    
+    from google.cloud.firestore import Query
+    query = query.order_by("created_at", direction=Query.DESCENDING).offset(offset).limit(limit)
+    
+    docs = query.stream()
+    results = []
+    for doc in docs:
+        data = doc.to_dict()
+        data["id"] = doc.id
+        results.append(data)
+    return results
 
-
-def update_portfolio_item(db: Session, item_id: int, item_in: PortfolioUpdate) -> PortfolioItem | None:
+def update_portfolio_item(db: FirestoreClient, item_id: str, item_in: PortfolioUpdate):
     item = get_portfolio_item(db, item_id)
     if not item:
         return None
+    
     update_data = item_in.dict(exclude_unset=True)
-    # handle media separately if provided (replace behavior)
-    media_list = update_data.pop('media', None)
-    for key, value in update_data.items():
-        setattr(item, key, value)
-    db.add(item)
-    db.commit()
-    db.refresh(item)
-    if media_list is not None:
-        # delete existing media and add new set
-        db.query(PortfolioMedia).filter(PortfolioMedia.portfolio_id == item.id).delete()
-        db.commit()
-        for idx, m in enumerate(media_list):
-            media = PortfolioMedia(
-                portfolio_id=item.id,
-                filename=m.filename,
-                url=str(m.url),
-                mime_type=m.mime_type,
-                sort_order=m.sort_order if m.sort_order is not None else idx,
-            )
-            db.add(media)
-        db.commit()
-        db.refresh(item)
+    update_data['updated_at'] = datetime.utcnow().isoformat()
+    
+    if 'media' in update_data and update_data['media'] is not None:
+        for idx, m in enumerate(update_data['media']):
+            m['id'] = m.get('id', str(uuid.uuid4()))
+            if m.get('sort_order') is None:
+                m['sort_order'] = idx
+            m['url'] = str(m['url'])
+            
+    db.collection("portfolio_items").document(item_id).update(update_data)
+    item.update(update_data)
     return item
 
+def delete_portfolio_item(db: FirestoreClient, item_id: str) -> bool:
+    doc_ref = db.collection("portfolio_items").document(item_id)
+    if not doc_ref.get().exists:
+        return False
+    doc_ref.delete()
+    return True
 
-def delete_portfolio_item(db: Session, item_id: int) -> bool:
+def add_media(db: FirestoreClient, item_id: str, media_in: MediaCreate):
+    item = get_portfolio_item(db, item_id)
+    if not item:
+        raise Exception("Portfolio item not found")
+        
+    media_data = media_in.dict()
+    media_data['id'] = str(uuid.uuid4())
+    media_data['url'] = str(media_data['url'])
+    
+    media_list = item.get('media', [])
+    if media_data.get('sort_order') is None:
+        media_data['sort_order'] = len(media_list)
+        
+    media_list.append(media_data)
+    db.collection("portfolio_items").document(item_id).update({"media": media_list, "updated_at": datetime.utcnow().isoformat()})
+    return media_data
+
+def remove_media(db: FirestoreClient, item_id: str, media_id: str) -> bool:
     item = get_portfolio_item(db, item_id)
     if not item:
         return False
-    db.delete(item)
-    db.commit()
-    return True
-
-
-def add_media(db: Session, item_id: int, media_in: MediaCreate) -> PortfolioMedia:
-    media = PortfolioMedia(
-        portfolio_id=item_id,
-        filename=media_in.filename,
-        url=str(media_in.url),
-        mime_type=media_in.mime_type,
-        sort_order=media_in.sort_order,
-    )
-    db.add(media)
-    db.commit()
-    db.refresh(media)
-    return media
-
-
-def remove_media(db: Session, media_id: int) -> bool:
-    media = db.query(PortfolioMedia).filter(PortfolioMedia.id == media_id).first()
-    if not media:
+        
+    media_list = item.get('media', [])
+    new_media_list = [m for m in media_list if m.get('id') != media_id]
+    
+    if len(media_list) == len(new_media_list):
         return False
-    db.delete(media)
-    db.commit()
+        
+    db.collection("portfolio_items").document(item_id).update({"media": new_media_list, "updated_at": datetime.utcnow().isoformat()})
     return True

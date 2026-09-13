@@ -17,8 +17,8 @@ class ClientProfileUpdate(BaseModel):
 
 
 class ClientProfileOut(BaseModel):
-    id: int
-    user_id: int
+    id: str
+    user_id: str
     company_name: Optional[str] = None
     bio: Optional[str] = None
     location: Optional[str] = None
@@ -47,8 +47,8 @@ class DesignerProfileUpdate(BaseModel):
 
 
 class DesignerProfileOut(BaseModel):
-    id: int
-    user_id: int
+    id: str
+    user_id: str
     headline: Optional[str] = None
     bio: Optional[str] = None
     location: Optional[str] = None

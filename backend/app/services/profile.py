@@ -1,71 +1,57 @@
-from sqlalchemy.orm import Session
-from app.models.profile import ClientProfile, DesignerProfile
+from google.cloud.firestore import Client as FirestoreClient
 from app.schemas.profile import ClientProfileCreate, ClientProfileUpdate, DesignerProfileCreate, DesignerProfileUpdate
+from google.cloud.firestore_v1.base_query import FieldFilter
 
+def get_client_profile(db: FirestoreClient, user_id: str):
+    docs = db.collection("client_profiles").where(filter=FieldFilter("user_id", "==", user_id)).limit(1).stream()
+    for doc in docs:
+        data = doc.to_dict()
+        data["id"] = doc.id
+        return data
+    return None
 
-def get_client_profile(db: Session, user_id: int) -> ClientProfile | None:
-    return db.query(ClientProfile).filter(ClientProfile.user_id == user_id).first()
+def create_client_profile(db: FirestoreClient, user_id: str, profile_in: ClientProfileCreate):
+    profile_data = profile_in.dict()
+    profile_data["user_id"] = user_id
+    doc_ref = db.collection("client_profiles").document()
+    db.collection("client_profiles").document(doc_ref.id).set(profile_data)
+    profile_data["id"] = doc_ref.id
+    return profile_data
 
-
-def create_client_profile(db: Session, user_id: int, profile_in: ClientProfileCreate) -> ClientProfile:
-    profile = ClientProfile(
-        user_id=user_id,
-        company_name=profile_in.company_name,
-        bio=profile_in.bio,
-        location=profile_in.location,
-        website=profile_in.website,
-    )
-    db.add(profile)
-    db.commit()
-    db.refresh(profile)
-    return profile
-
-
-def update_client_profile(db: Session, user_id: int, profile_in: ClientProfileUpdate) -> ClientProfile | None:
+def update_client_profile(db: FirestoreClient, user_id: str, profile_in: ClientProfileUpdate):
     profile = get_client_profile(db, user_id)
     if not profile:
         return None
     
     update_data = profile_in.dict(exclude_unset=True)
-    for key, value in update_data.items():
-        setattr(profile, key, value)
-    
-    db.add(profile)
-    db.commit()
-    db.refresh(profile)
+    if update_data:
+        db.collection("client_profiles").document(profile["id"]).update(update_data)
+        profile.update(update_data)
     return profile
 
+def get_designer_profile(db: FirestoreClient, user_id: str):
+    docs = db.collection("designer_profiles").where(filter=FieldFilter("user_id", "==", user_id)).limit(1).stream()
+    for doc in docs:
+        data = doc.to_dict()
+        data["id"] = doc.id
+        return data
+    return None
 
-def get_designer_profile(db: Session, user_id: int) -> DesignerProfile | None:
-    return db.query(DesignerProfile).filter(DesignerProfile.user_id == user_id).first()
+def create_designer_profile(db: FirestoreClient, user_id: str, profile_in: DesignerProfileCreate):
+    profile_data = profile_in.dict()
+    profile_data["user_id"] = user_id
+    doc_ref = db.collection("designer_profiles").document()
+    db.collection("designer_profiles").document(doc_ref.id).set(profile_data)
+    profile_data["id"] = doc_ref.id
+    return profile_data
 
-
-def create_designer_profile(db: Session, user_id: int, profile_in: DesignerProfileCreate) -> DesignerProfile:
-    profile = DesignerProfile(
-        user_id=user_id,
-        headline=profile_in.headline,
-        bio=profile_in.bio,
-        location=profile_in.location,
-        website=profile_in.website,
-        hourly_rate=profile_in.hourly_rate,
-        years_experience=profile_in.years_experience,
-    )
-    db.add(profile)
-    db.commit()
-    db.refresh(profile)
-    return profile
-
-
-def update_designer_profile(db: Session, user_id: int, profile_in: DesignerProfileUpdate) -> DesignerProfile | None:
+def update_designer_profile(db: FirestoreClient, user_id: str, profile_in: DesignerProfileUpdate):
     profile = get_designer_profile(db, user_id)
     if not profile:
         return None
     
     update_data = profile_in.dict(exclude_unset=True)
-    for key, value in update_data.items():
-        setattr(profile, key, value)
-    
-    db.add(profile)
-    db.commit()
-    db.refresh(profile)
+    if update_data:
+        db.collection("designer_profiles").document(profile["id"]).update(update_data)
+        profile.update(update_data)
     return profile
