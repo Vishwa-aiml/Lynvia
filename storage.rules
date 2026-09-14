@@ -1,0 +1,53 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // --- Helper Functions ---
+    
+    function isAuthenticated() {
+      return request.auth != null && request.auth.uid != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // --- Public Assets (Avatars/Portfolios) ---
+    
+    match /users/{userId}/avatar/{fileName} {
+      // Anyone can see profile avatars
+      allow read: if true;
+      // Only the owner can upload their avatar, limit to images < 5MB
+      allow write: if isOwner(userId)
+                   && request.resource.size < 5 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+    }
+    
+    match /users/{userId}/portfolio/{fileName} {
+      // Anyone can view portfolio items
+      allow read: if true;
+      // Only owner can upload
+      allow write: if isOwner(userId);
+    }
+    
+    // --- Project Delivery & Workspace Files ---
+    
+    match /projects/{projectId}/{allPaths=**} {
+      // In a real application, you would validate that the user is the client
+      // or designer of this project before allowing read/write.
+      // However, Storage rules cannot easily query Firestore documents without a 
+      // complex custom token setup. 
+      //
+      // BEST PRACTICE:
+      // The backend should generate short-lived Signed URLs for downloads/uploads
+      // and these rules should deny all direct client access to project files.
+      
+      allow read, write: if false; 
+    }
+
+    // Default deny
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
