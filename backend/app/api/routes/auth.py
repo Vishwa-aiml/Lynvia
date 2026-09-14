@@ -11,7 +11,7 @@ from typing import Optional
 import requests as http_requests
 import os
 
-GOOGLE_CLIENT_ID = "488343505027-ga55geta6m947eu1lu43g10nlhsubav4.apps.googleusercontent.com"
+from firebase_admin import auth as fb_auth
 
 router = APIRouter()
 
@@ -62,22 +62,36 @@ def get_me(current_user: User = Depends(get_current_user)):
 
 @router.post("/google", response_model=Token)
 def google_auth(req: GoogleAuthRequest, db: FirestoreClient = Depends(get_db)):
-    """Verify a Google ID token, then sign up or log in the user."""
-    try:
-        resp = http_requests.get(
-            f"https://oauth2.googleapis.com/tokeninfo?id_token={req.token}",
-            timeout=10,
-        )
-        info = resp.json()
-    except Exception:
-        raise HTTPException(status_code=400, detail="Failed to verify Google token")
+    """Verify a Google or Firebase ID token, then sign up or log in the user."""
+    email = None
+    full_name = ""
 
-    if resp.status_code != 200 or info.get("aud") != GOOGLE_CLIENT_ID:
+    # 1. Attempt verification via Firebase Admin SDK (standard for Firebase Auth tokens)
+    try:
+        decoded_token = fb_auth.verify_id_token(req.token)
+        email = decoded_token.get("email")
+        full_name = decoded_token.get("name") or decoded_token.get("given_name") or ""
+    except Exception:
+        pass
+
+    # 2. Fallback: Verify via Google OAuth2 tokeninfo (for direct Google OAuth tokens)
+    if not email:
+        try:
+            resp = http_requests.get(
+                f"https://oauth2.googleapis.com/tokeninfo?id_token={req.token}",
+                timeout=10,
+            )
+            if resp.status_code == 200:
+                info = resp.json()
+                email = info.get("email")
+                full_name = info.get("name") or info.get("given_name") or ""
+        except Exception:
+            pass
+
+    if not email:
         raise HTTPException(status_code=401, detail="Invalid Google token")
 
-    email = info.get("email", "").strip().lower()
-    if not email:
-        raise HTTPException(status_code=400, detail="Google account has no email")
+    email = email.strip().lower()
 
     role_str = (req.role or "CLIENT").upper()
     try:
@@ -87,19 +101,18 @@ def google_auth(req: GoogleAuthRequest, db: FirestoreClient = Depends(get_db)):
 
     user = auth_service.get_user_by_email(db, email)
     if not user:
-        full_name = info.get("name") or info.get("given_name", "")
         import secrets
         user_in = UserCreate(
             email=email,
             password=secrets.token_urlsafe(32),
-            full_name=full_name,
+            full_name=full_name or email.split("@")[0],
             role=role,
         )
         user = auth_service.create_user(db, user_in)
 
     role_value = user.role.value if user.role else None
     token = create_access_token(subject=user.id, role=role_value)
-    return {"access_token": token, "token_type": "bearer"}
+    return {"access_token": token, "token_type": "bearer", "role": role_value}
 
 
 class GoogleUserInfoRequest(BaseModel):

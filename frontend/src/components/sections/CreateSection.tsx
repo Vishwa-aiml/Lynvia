@@ -35,7 +35,7 @@ export default function CreateSection() {
             </p>
             <Link
               to="/start"
-              className="inline-flex items-center gap-4 bg-ivory text-ink px-8 py-4 rounded-full font-bold tracking-wider text-sm hover:gap-6 transition-all duration-300"
+              className="inline-flex items-center gap-4 bg-ivory text-ink px-8 py-4 rounded-full font-bold tracking-wider text-sm hover:gap-6 hover:bg-accent hover:text-white hover:shadow-[0_0_20px_rgba(168,85,247,0.5)] active:scale-95 transition-all duration-300"
             >
               POST A PROJECT <ArrowRight size={16} />
             </Link>
@@ -67,12 +67,7 @@ export default function CreateSection() {
                   </div>
                 </div>
 
-                <div className="flex flex-col items-center px-4 shrink-0">
-                  <p className="text-xs text-ivory/30 font-bold tracking-widest -rotate-90 whitespace-nowrap">
-                    {t.connector}
-                  </p>
-                  <ArrowRight size={20} className="text-ivory/30 mt-1" />
-                </div>
+
               </motion.div>
             ))}
 
@@ -84,11 +79,11 @@ export default function CreateSection() {
               transition={{ duration: 0.8, delay: 0.6, ease: [0.25, 0.1, 0.25, 1] }}
               className="flex-1 mt-0"
             >
-              <div className="border-2 border-accent rounded-2xl p-6 bg-accent/10">
-                <p className="text-xs text-accent/60 font-bold tracking-widest mb-2">
+              <div className="border border-ivory/20 rounded-2xl p-6 hover:border-accent hover:bg-accent/5 transition-all duration-500 cursor-default group">
+                <p className="text-xs text-ivory/40 font-bold tracking-widest mb-2">
                   04
                 </p>
-                <p className="text-4xl font-display font-black text-accent">
+                <p className="text-4xl font-display font-black text-ivory group-hover:text-accent transition-colors duration-300">
                   WORK
                 </p>
               </div>

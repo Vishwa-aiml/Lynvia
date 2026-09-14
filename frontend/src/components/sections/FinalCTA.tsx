@@ -56,7 +56,7 @@ export default function FinalCTA() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-          className="font-serif text-2xl text-ivory/60 max-w-lg mx-auto leading-relaxed mb-16"
+          className="font-serif text-2xl text-ivory/90 max-w-lg mx-auto leading-relaxed mb-16"
         >
           Join thousands of brands who have trusted Lynvia to bring their
           vision to life.
@@ -71,34 +71,19 @@ export default function FinalCTA() {
         >
           <Link
             to="/start"
-            className="inline-flex items-center justify-center gap-4 bg-ivory text-ink px-10 py-5 rounded-full font-black tracking-wider text-sm hover:gap-6 hover:bg-white transition-all duration-300 text-center"
+            className="inline-flex items-center justify-center gap-4 bg-ivory text-ink px-10 py-5 rounded-full font-black tracking-wider text-sm hover:gap-6 hover:bg-accent hover:text-white hover:shadow-[0_0_20px_rgba(168,85,247,0.5)] active:scale-95 transition-all duration-300 text-center"
           >
             POST YOUR PROJECT <ArrowRight size={16} />
           </Link>
           <Link
             to="/designers"
-            className="inline-flex items-center justify-center gap-4 border border-ivory/30 text-ivory px-10 py-5 rounded-full font-black tracking-wider text-sm hover:bg-white/10 transition-all duration-300 text-center"
+            className="inline-flex items-center justify-center gap-4 border border-ivory/30 text-ivory px-10 py-5 rounded-full font-black tracking-wider text-sm hover:bg-accent hover:border-accent hover:text-white hover:shadow-[0_0_20px_rgba(168,85,247,0.5)] active:scale-95 transition-all duration-300 text-center"
           >
             BROWSE DESIGNERS
           </Link>
         </motion.div>
 
-        {/* Trust row */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1, delay: 0.6 }}
-          className="mt-24 flex flex-wrap items-center justify-center gap-8 text-xs font-bold tracking-widest text-ivory/30"
-        >
-          <span>NO SUBSCRIPTION</span>
-          <span className="text-ivory/10">·</span>
-          <span>PAY PER PROJECT</span>
-          <span className="text-ivory/10">·</span>
-          <span>FULL RIGHTS INCLUDED</span>
-          <span className="text-ivory/10">·</span>
-          <span>MONEY-BACK GUARANTEE</span>
-        </motion.div>
+
       </div>
     </section>
   );

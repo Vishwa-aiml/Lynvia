@@ -27,4 +27,7 @@ export const authService = {
     
   googleAuth: (token: string, role?: string) => 
     apiClient.post<AuthResponse>('/auth/google', { token, role }),
+
+  forgotPassword: (email: string) =>
+    apiClient.post<{ message: string }>('/auth/forgot-password', { email }),
 };

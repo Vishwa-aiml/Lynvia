@@ -72,13 +72,13 @@ export default function Hero() {
         <div className="flex flex-row gap-3 shrink-0">
             <Link
               to="/explore"
-              className="bg-white text-black px-6 md:px-8 py-3 md:py-4 rounded-full font-bold tracking-wider text-xs md:text-sm hover:bg-white/90 transition-colors text-center whitespace-nowrap"
+              className="bg-white text-black px-6 md:px-8 py-3 md:py-4 rounded-full font-bold tracking-wider text-xs md:text-sm hover:bg-accent hover:text-white hover:shadow-[0_0_20px_rgba(168,85,247,0.5)] active:scale-95 transition-all duration-300 text-center whitespace-nowrap"
             >
               EXPLORE DESIGNERS
             </Link>
             <Link
               to="/start"
-              className="border border-white/40 text-white px-6 md:px-8 py-3 md:py-4 rounded-full font-bold tracking-wider text-xs md:text-sm hover:bg-white/10 transition-colors text-center whitespace-nowrap"
+              className="border border-white/40 text-white px-6 md:px-8 py-3 md:py-4 rounded-full font-bold tracking-wider text-xs md:text-sm hover:bg-accent hover:border-accent hover:text-white active:scale-95 transition-all duration-300 text-center whitespace-nowrap shadow-[0_0_0_0_rgba(168,85,247,0)] hover:shadow-[0_0_20px_rgba(168,85,247,0.5)]"
             >
               START A PROJECT
             </Link>

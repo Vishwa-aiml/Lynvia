@@ -44,12 +44,12 @@ export default function Deliver() {
           <br />
           DELIVERED.
         </h2>
-        <p className="font-serif text-2xl text-ivory/70 max-w-xl mx-auto leading-relaxed">
+        <p className="font-serif text-2xl text-white font-medium drop-shadow-lg max-w-xl mx-auto leading-relaxed">
           Premium creative assets. All rights included. No surprises, ever.
         </p>
 
         {/* Stats row */}
-        <div className="mt-16 flex flex-col sm:flex-row justify-center gap-12 sm:gap-24">
+        <div className="mt-8 flex flex-col sm:flex-row justify-center gap-12 sm:gap-24">
           {[
             { value: "4.4/5", label: "User Rating" },
             { value: "98%", label: "Client Satisfaction" },

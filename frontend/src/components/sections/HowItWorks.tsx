@@ -80,7 +80,7 @@ export default function HowItWorks() {
       <div className="sticky top-0 h-screen flex overflow-hidden">
 
         {/* ── Left info panel ── */}
-        <div className="w-full md:w-[42%] flex flex-col justify-center px-8 md:px-12 border-r border-black/10 shrink-0">
+        <div className="w-full md:w-[42%] flex flex-col justify-center items-center text-center px-8 md:px-12 shrink-0">
           <p className="text-xs font-bold tracking-[0.3em] text-black/40 mb-4">
             04 — HOW IT WORKS
           </p>
