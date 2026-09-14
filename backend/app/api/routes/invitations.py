@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from app.db.session import get_db
+from app.db.firebase import get_db
 from app.schemas.invitation import InvitationCreate, InvitationOut
 from app.api.dependencies import get_current_user, require_client_role, require_designer_role
 from app.services import invitation as inv_svc

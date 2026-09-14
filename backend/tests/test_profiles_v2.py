@@ -1,6 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
-from app.db.session import get_db
+from app.db.firebase import get_db
 from app.models.user import User, UserRole
 from app.models.profile import ClientProfile, DesignerProfile
 from app.utils.security import hash_password, create_access_token

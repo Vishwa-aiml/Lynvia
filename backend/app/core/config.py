@@ -4,7 +4,6 @@ from typing import Optional
 
 
 class Settings(BaseSettings):
-    DATABASE_URL: str = "postgresql://postgres:password@localhost:5432/lynvia"
     APP_ENV: str = "development"
     SECRET_KEY: str = "change-me-in-prod"
     JWT_ALGORITHM: str = "HS256"
@@ -15,7 +14,7 @@ class Settings(BaseSettings):
     RAZORPAY_KEY_ID: str = ""
     RAZORPAY_KEY_SECRET: str = ""
     RAZORPAY_WEBHOOK_SECRET: str = ""
-    PLATFORM_COMMISSION_RATE: float = 0.12
+    PLATFORM_COMMISSION_RATE: float = 0.1
     # Withdrawal settings
     MINIMUM_WITHDRAWAL_AMOUNT: int = 10000  # ₹100 in paise (minor units)
     WITHDRAWAL_CURRENCY: str = "INR"

@@ -42,11 +42,17 @@ def create_app() -> FastAPI:
     from app.api.routes import client_profile as client_profile_router
     from app.api.routes import designer_profile as designer_profile_router
     from app.api.routes import service as services_router
-    # from app.api.routes import projects as projects_router
+
+    # INCLUDED
+    from app.api.routes import projects as projects_router
+
     from app.api.routes import portfolio as portfolio_router
     from app.api.routes import discovery as discovery_router
     # from app.api.routes import workspace as workspace_router
-    # from app.api.routes import payments as payments_router
+
+    # INCLUDED
+    from app.api.routes import payments as payments_router
+
     # from app.api.routes import earnings as earnings_router
 
     app.include_router(health_router, prefix="/health", tags=["health"])
@@ -57,24 +63,29 @@ def create_app() -> FastAPI:
     app.include_router(services_router.router, prefix="/services", tags=["services"])
     app.include_router(portfolio_router.router, prefix="/portfolio", tags=["portfolio"])
     app.include_router(discovery_router.router, prefix="/discovery", tags=["discovery"])
-    # app.include_router(projects_router.router, prefix="/projects", tags=["projects"])
-    # app.include_router(workspace_router.router, prefix="/projects/{project_id}/workspace", tags=["workspace"])
-    # from app.api.routes import invitations as invitations_router
+    app.include_router(projects_router.router, prefix="/projects", tags=["projects"])
+
+    from app.api.routes import workspace as workspace_router
+    app.include_router(workspace_router.router, prefix="/projects/{project_id}/workspace", tags=["workspace"])
     # app.include_router(invitations_router.router, prefix="", tags=["invitations"])
-    # app.include_router(payments_router.router, prefix="", tags=["payments"])
-    
-    # from app.api.routes import notifications as notifications_router
-    # app.include_router(notifications_router.router, prefix="", tags=["notifications"])
+
+    app.include_router(payments_router.router, prefix="", tags=["payments"])
+
+    from app.api.routes import notifications as notifications_router
+    app.include_router(notifications_router.router, prefix="", tags=["notifications"])
     # app.include_router(earnings_router.router, prefix="", tags=["earnings"])
 
-    # from app.api.routes import chat as chat_router
-    # app.include_router(chat_router.router, prefix="", tags=["chat"])
+    from app.api.routes import chat as chat_router
+    app.include_router(chat_router.router, prefix="", tags=["chat"])
 
-    # from app.api.routes import disputes as disputes_router
-    # app.include_router(disputes_router.router, prefix="", tags=["disputes"])
+    from app.api.routes import disputes as disputes_router
+    app.include_router(disputes_router.router, prefix="", tags=["disputes"])
 
-    # from app.api.routes import withdrawals as withdrawals_router
-    # app.include_router(withdrawals_router.router, prefix="", tags=["withdrawals"])
+    from app.api.routes import withdrawals as withdrawals_router
+    app.include_router(withdrawals_router.router, prefix="", tags=["withdrawals"])
+    
+    from app.api.routes import admin as admin_router
+    app.include_router(admin_router.router, prefix="", tags=["admin"])
 
     @app.get("/")
     def root():

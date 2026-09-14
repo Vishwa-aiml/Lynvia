@@ -1,7 +1,7 @@
-﻿"""
+"""
 Razorpay Payout provider abstraction.
 
-In prototype mode this is a STUB — Razorpay X Payouts requires verified
+In prototype mode this is a STUB � Razorpay X Payouts requires verified
 fund accounts (KYC). The abstraction is kept clean so that real
 implementation can replace the stub without touching business logic.
 

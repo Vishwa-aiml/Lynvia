@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from app.db.session import get_db
+from app.db.firebase import get_db
 from app.api.dependencies import get_current_user, require_admin_role
 from app.models.user import User, UserRole
 

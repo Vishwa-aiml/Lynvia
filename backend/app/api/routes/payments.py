@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, Request, Header
-from sqlalchemy.orm import Session
+from google.cloud.firestore import Client as FirestoreClient
 from typing import List
 
-from app.db.session import get_db
+from app.db.firebase import get_db
 from app.api.dependencies import get_current_user
 from app.models.user import User, UserRole
 from app.schemas.payment import PaymentOut, PaymentVerificationReq
@@ -15,8 +15,8 @@ router = APIRouter()
 
 @router.post("/projects/{project_id}/payments", response_model=PaymentOut, status_code=status.HTTP_201_CREATED)
 def create_payment(
-    project_id: int,
-    db: Session = Depends(get_db),
+    project_id: str,
+    db: FirestoreClient = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
     """Create a new payment order for a project."""
@@ -27,9 +27,9 @@ def create_payment(
 
 @router.post("/payments/{payment_id}/verify", response_model=PaymentOut)
 def verify_payment(
-    payment_id: int,
+    payment_id: str,
     req: PaymentVerificationReq,
-    db: Session = Depends(get_db),
+    db: FirestoreClient = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
     """Verify a payment signature after client checkout."""
@@ -42,7 +42,7 @@ def verify_payment(
 async def razorpay_webhook(
     request: Request,
     x_razorpay_signature: str = Header(None),
-    db: Session = Depends(get_db)
+    db: FirestoreClient = Depends(get_db)
 ):
     """Handle incoming Razorpay webhooks."""
     if not x_razorpay_signature:
@@ -57,3 +57,4 @@ async def razorpay_webhook(
     payload = await request.json()
     process_razorpay_webhook(db, payload)
     return {"status": "ok"}
+

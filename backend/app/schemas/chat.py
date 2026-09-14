@@ -1,28 +1,33 @@
-﻿"""
+"""
 Chat Pydantic schemas.
 """
 from datetime import datetime
 from typing import Optional, List, Any
-from pydantic import BaseModel, Field, model_validator
-from app.models.chat import MessageType
+from pydantic import BaseModel, Field, ConfigDict
+from enum import Enum
 
-# ── Conversation ───────────────────────────────────────────────────────────────
+class MessageType(str, Enum):
+    TEXT = "TEXT"
+    FILE = "FILE"
+    SYSTEM = "SYSTEM"
+    MILESTONE_UPDATE = "MILESTONE_UPDATE"
+
+# -- Conversation ---------------------------------------------------------------
 
 class ConversationOut(BaseModel):
-    id: int
-    project_id: int
-    last_message_at: Optional[datetime] = None
-    created_at: datetime
+    id: str
+    projectId: str
+    lastMessageAt: Optional[datetime] = None
+    createdAt: datetime
 
-    model_config = {"from_attributes": True}
+    model_config = ConfigDict(from_attributes=True)
 
-
-# ── Messages ───────────────────────────────────────────────────────────────────
+# -- Messages -------------------------------------------------------------------
 
 class MessageCreate(BaseModel):
     content: str = Field(..., min_length=1, max_length=4000)
-    message_type: MessageType = MessageType.TEXT
-    reply_to_message_id: Optional[int] = None
+    messageType: MessageType = MessageType.TEXT
+    replyToMessageId: Optional[str] = None
 
 
 class MessageUpdate(BaseModel):
@@ -30,23 +35,23 @@ class MessageUpdate(BaseModel):
 
 
 class MessageOut(BaseModel):
-    id: int
-    conversation_id: int
-    sender_id: Optional[int]
+    id: str
+    conversationId: str
+    senderId: Optional[str]
     content: str
-    message_type: MessageType
-    reply_to_message_id: Optional[int] = None
-    is_deleted: bool
-    created_at: datetime
-    updated_at: datetime
+    messageType: MessageType
+    replyToMessageId: Optional[str] = None
+    isDeleted: bool
+    createdAt: datetime
+    updatedAt: datetime
 
-    model_config = {"from_attributes": True}
+    model_config = ConfigDict(from_attributes=True)
 
     @classmethod
     def from_orm_safe(cls, msg: Any) -> "MessageOut":
         """Redact content if message is soft-deleted."""
         obj = cls.model_validate(msg)
-        if obj.is_deleted:
+        if obj.isDeleted:
             obj.content = "This message was deleted."
         return obj
 
@@ -56,14 +61,15 @@ class MessageListResponse(BaseModel):
     total: int
     page: int
     limit: int
-    has_next: bool
+    hasNext: bool
 
 
-# ── Read state ─────────────────────────────────────────────────────────────────
+# -- Read state -----------------------------------------------------------------
 
 class ChatUnreadCountResponse(BaseModel):
-    unread_count: int
+    unreadCount: int
 
 
 class MarkChatReadResponse(BaseModel):
     updated: bool
+

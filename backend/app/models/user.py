@@ -12,7 +12,7 @@ class UserBase(BaseModel):
     email: str
     full_name: Optional[str] = None
     role: UserRole = UserRole.CLIENT
-    is_active: bool = True
+    accountStatus: str = "ACTIVE"
 
 class UserCreate(UserBase):
     password: str

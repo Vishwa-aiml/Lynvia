@@ -60,10 +60,10 @@ def get_current_user(
     user_data["id"] = user_id
     user = User(**user_data)
 
-    if not user.is_active:
+    if user.accountStatus != "ACTIVE":
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Account is inactive",
+            detail="Account is inactive or suspended",
             headers={"WWW-Authenticate": "Bearer"},
         )
 

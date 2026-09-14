@@ -1,37 +1,37 @@
 import json
 import uuid
-from sqlalchemy.orm import Session
 from datetime import datetime, timezone
 from fastapi import HTTPException, status
+from google.cloud.firestore import Client as FirestoreClient, Transaction, transactional
 
-from app.models.payment import (
-    Payment, PaymentStatus, Transaction, TransactionType,
-    TransactionStatus, LedgerEntry, EntryDirection, DesignerEarning, EarningStatus,
-    WebhookEvent
+from app.schemas.payment import (
+    PaymentStatus, TransactionType, TransactionStatus, EntryDirection, 
+    EarningStatus, PaymentVerificationReq, PaymentOut
 )
-from app.models.project import Project
-from app.schemas.payment import PaymentVerificationReq
+from app.schemas.project import ProjectStatus
 from app.integrations.razorpay.payments import create_order, verify_payment_signature
 from app.core.config import settings
+from app.services.project import get_project
 
-def create_payment_order(db: Session, project_id: int, client_id: int) -> Payment:
-    project = db.query(Project).filter(Project.id == project_id, Project.client_id == client_id).first()
-    if not project:
+
+def create_payment_order(db: FirestoreClient, project_id: str, client_id: str) -> PaymentOut:
+    project = get_project(db, project_id)
+    if not project or project.clientId != client_id:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found or unauthorized")
     
     if not project.budget:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Project budget not set")
     
-    if not project.assigned_designer_id:
+    if not project.designerId:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No designer assigned to this project yet")
     
-    # Check if a successful payment already exists
-    existing_payment = db.query(Payment).filter(
-        Payment.project_id == project_id,
-        Payment.status == PaymentStatus.SUCCEEDED
-    ).first()
+    if project.status != ProjectStatus.AWAITING_PAYMENT:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Project is not in AWAITING_PAYMENT state")
     
-    if existing_payment:
+    # Check if a successful payment already exists
+    existing_payments = db.collection("payments").where("projectId", "==", project_id).where("status", "==", PaymentStatus.SUCCEEDED.value).limit(1).get()
+    
+    if existing_payments:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Payment already completed for this project")
     
     amount = project.budget
@@ -39,35 +39,44 @@ def create_payment_order(db: Session, project_id: int, client_id: int) -> Paymen
     receipt = f"rcptid_{project_id}_{int(datetime.now(timezone.utc).timestamp())}"
     
     try:
-        # Request order from Razorpay
         order = create_order(amount=amount, currency=currency, receipt=receipt)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Failed to create payment order: {str(e)}")
 
-    payment = Payment(
-        project_id=project_id,
-        client_id=client_id,
-        amount=amount,
-        currency=currency,
-        provider="razorpay",
-        provider_order_id=order.get("id"),
-        status=PaymentStatus.CREATED
-    )
+    payment_id = str(uuid.uuid4())
+    now = datetime.now(timezone.utc)
     
-    db.add(payment)
-    db.commit()
-    db.refresh(payment)
-    return payment
+    data = {
+        "id": payment_id,
+        "projectId": project_id,
+        "clientId": client_id,
+        "amount": amount,
+        "currency": currency,
+        "provider": "razorpay",
+        "providerOrderId": order.get("id"),
+        "status": PaymentStatus.CREATED.value,
+        "paidAt": None,
+        "createdAt": now,
+        "updatedAt": now
+    }
+    
+    db.collection("payments").document(payment_id).set(data)
+    return PaymentOut(**data)
 
-def verify_and_process_payment(db: Session, payment_id: int, client_id: int, req: PaymentVerificationReq):
-    payment = db.query(Payment).filter(Payment.id == payment_id, Payment.client_id == client_id).first()
-    if not payment:
+
+def verify_and_process_payment(db: FirestoreClient, payment_id: str, client_id: str, req: PaymentVerificationReq):
+    payment_doc = db.collection("payments").document(payment_id).get()
+    if not payment_doc.exists:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Payment not found")
         
-    if payment.status == PaymentStatus.SUCCEEDED:
-        return payment # Idempotent return
+    payment_data = payment_doc.to_dict()
+    if payment_data["clientId"] != client_id:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Payment not found")
         
-    if payment.provider_order_id != req.razorpay_order_id:
+    if payment_data["status"] == PaymentStatus.SUCCEEDED.value:
+        return PaymentOut(**payment_data)
+        
+    if payment_data["providerOrderId"] != req.razorpay_order_id:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Order ID mismatch")
 
     is_valid = verify_payment_signature(req.razorpay_order_id, req.razorpay_payment_id, req.razorpay_signature)
@@ -75,11 +84,10 @@ def verify_and_process_payment(db: Session, payment_id: int, client_id: int, req
     if not is_valid:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid payment signature")
     
-    payment.provider_payment_id = req.razorpay_payment_id
-    
-    return _process_successful_payment(db, payment)
+    return _process_successful_payment(db, payment_id, req.razorpay_payment_id)
 
-def process_razorpay_webhook(db: Session, payload: dict):
+
+def process_razorpay_webhook(db: FirestoreClient, payload: dict):
     event_id = payload.get("id")
     event_type = payload.get("event")
     
@@ -87,147 +95,166 @@ def process_razorpay_webhook(db: Session, payload: dict):
         return
         
     # Idempotency Check
-    existing_event = db.query(WebhookEvent).filter(
-        WebhookEvent.provider == "razorpay",
-        WebhookEvent.event_id == event_id
-    ).first()
+    webhook_ref = db.collection("webhookEvents").document(f"razorpay_{event_id}")
+    if webhook_ref.get().exists:
+        return
     
-    if existing_event:
-        return # Already processed
-    
-    webhook_event = WebhookEvent(
-        provider="razorpay",
-        event_id=event_id,
-        event_type=event_type,
-        payload=json.dumps(payload),
-        processed=0
-    )
-    db.add(webhook_event)
-    db.commit()
+    now = datetime.now(timezone.utc)
+    webhook_ref.set({
+        "provider": "razorpay",
+        "eventId": event_id,
+        "eventType": event_type,
+        "payload": json.dumps(payload),
+        "processed": True,
+        "processedAt": now,
+        "createdAt": now
+    })
     
     if event_type == "order.paid":
         order_entity = payload.get("payload", {}).get("order", {}).get("entity", {})
         provider_order_id = order_entity.get("id")
+        provider_payment_id = payload.get("payload", {}).get("payment", {}).get("entity", {}).get("id")
         
-        payment = db.query(Payment).filter(Payment.provider_order_id == provider_order_id).first()
-        if payment and payment.status != PaymentStatus.SUCCEEDED:
-            payment.provider_payment_id = payload.get("payload", {}).get("payment", {}).get("entity", {}).get("id")
-            _process_successful_payment(db, payment)
-            
-    # Mark as processed
-    webhook_event.processed = 1
-    webhook_event.processed_at = datetime.now(timezone.utc)
-    db.commit()
+        payments = db.collection("payments").where("providerOrderId", "==", provider_order_id).limit(1).get()
+        if payments:
+            payment_doc = payments[0]
+            if payment_doc.to_dict().get("status") != PaymentStatus.SUCCEEDED.value:
+                _process_successful_payment(db, payment_doc.id, provider_payment_id)
 
-def _process_successful_payment(db: Session, payment: Payment) -> Payment:
-    """Core Ledger Generation logic. This handles commission breakdown and creates immutable ledger records."""
-    if payment.status == PaymentStatus.SUCCEEDED:
-        return payment # Ensure double execution is impossible
+
+def _process_successful_payment(db: FirestoreClient, payment_id: str, provider_payment_id: str) -> PaymentOut:
+    transaction = db.transaction()
+    return _atomic_process_successful_payment(transaction, db, payment_id, provider_payment_id)
+
+
+@transactional
+def _atomic_process_successful_payment(transaction: Transaction, db: FirestoreClient, payment_id: str, provider_payment_id: str) -> PaymentOut:
+    payment_ref = db.collection("payments").document(payment_id)
+    payment_doc = payment_ref.get(transaction=transaction)
+    
+    if not payment_doc.exists:
+        raise ValueError("Payment not found")
         
-    payment.status = PaymentStatus.SUCCEEDED
-    payment.paid_at = datetime.now(timezone.utc)
+    payment_data = payment_doc.to_dict()
+    if payment_data["status"] == PaymentStatus.SUCCEEDED.value:
+        return PaymentOut(**payment_data)
+        
+    project_id = payment_data["projectId"]
+    project_ref = db.collection("projects").document(project_id)
+    project_doc = project_ref.get(transaction=transaction)
     
-    project = db.query(Project).filter(Project.id == payment.project_id).first()
+    if not project_doc.exists:
+        raise ValueError("Project not found")
+        
+    project_data = project_doc.to_dict()
     
-    # 1. Main Payment Transaction
-    tx_payment = Transaction(
-        project_id=payment.project_id,
-        payment_id=payment.id,
-        type=TransactionType.PAYMENT,
-        amount=payment.amount,
-        currency=payment.currency,
-        status=TransactionStatus.COMPLETED
-    )
-    db.add(tx_payment)
-    db.flush() # flush to get tx_payment.id
+    now = datetime.now(timezone.utc)
+    amount = payment_data["amount"]
+    currency = payment_data["currency"]
     
-    ledger_client = LedgerEntry(
-        project_id=project.id,
-        payment_id=payment.id,
-        transaction_id=tx_payment.id,
-        user_id=payment.client_id,
-        entry_type="CLIENT_PAYMENT",
-        amount=payment.amount,
-        currency=payment.currency,
-        direction=EntryDirection.CREDIT,
-        description="Client payment for project"
-    )
-    db.add(ledger_client)
+    # 1. Update Payment
+    updated_payment = {
+        "status": PaymentStatus.SUCCEEDED.value,
+        "providerPaymentId": provider_payment_id,
+        "paidAt": now,
+        "updatedAt": now
+    }
+    transaction.update(payment_ref, updated_payment)
+    payment_data.update(updated_payment)
     
-    # 2. Commission Calculation
+    # 2. Update Project Status to ACTIVE
+    transaction.update(project_ref, {
+        "status": ProjectStatus.ACTIVE.value,
+        "updatedAt": now
+    })
+    
+    # 3. Main Payment Transaction & Ledger
+    tx_payment_id = str(uuid.uuid4())
+    transaction.set(db.collection("transactions").document(tx_payment_id), {
+        "id": tx_payment_id,
+        "projectId": project_id,
+        "paymentId": payment_id,
+        "type": TransactionType.PAYMENT.value,
+        "amount": amount,
+        "currency": currency,
+        "status": TransactionStatus.COMPLETED.value,
+        "createdAt": now
+    })
+    
+    ledger_client_id = str(uuid.uuid4())
+    transaction.set(db.collection("ledger").document(ledger_client_id), {
+        "id": ledger_client_id,
+        "projectId": project_id,
+        "paymentId": payment_id,
+        "transactionId": tx_payment_id,
+        "userId": payment_data["clientId"],
+        "entryType": "CLIENT_PAYMENT",
+        "amount": amount,
+        "currency": currency,
+        "direction": EntryDirection.CREDIT.value,
+        "description": "Client payment for project",
+        "createdAt": now
+    })
+    
+    # 4. Commission Calculation
     commission_rate = settings.PLATFORM_COMMISSION_RATE
-    platform_fee = int(round(payment.amount * commission_rate))
-    net_designer_amount = payment.amount - platform_fee
+    platform_fee = int(round(amount * commission_rate))
+    net_designer_amount = amount - platform_fee
     
-    tx_commission = Transaction(
-        project_id=payment.project_id,
-        payment_id=payment.id,
-        type=TransactionType.COMMISSION,
-        amount=platform_fee,
-        currency=payment.currency,
-        status=TransactionStatus.COMPLETED
-    )
-    db.add(tx_commission)
-    db.flush()
+    tx_commission_id = str(uuid.uuid4())
+    transaction.set(db.collection("transactions").document(tx_commission_id), {
+        "id": tx_commission_id,
+        "projectId": project_id,
+        "paymentId": payment_id,
+        "type": TransactionType.COMMISSION.value,
+        "amount": platform_fee,
+        "currency": currency,
+        "status": TransactionStatus.COMPLETED.value,
+        "createdAt": now
+    })
     
-    ledger_commission = LedgerEntry(
-        project_id=project.id,
-        payment_id=payment.id,
-        transaction_id=tx_commission.id,
-        entry_type="PLATFORM_COMMISSION",
-        amount=platform_fee,
-        currency=payment.currency,
-        direction=EntryDirection.DEBIT,
-        description="Platform fee deducted"
-    )
-    db.add(ledger_commission)
+    ledger_commission_id = str(uuid.uuid4())
+    transaction.set(db.collection("ledger").document(ledger_commission_id), {
+        "id": ledger_commission_id,
+        "projectId": project_id,
+        "paymentId": payment_id,
+        "transactionId": tx_commission_id,
+        "entryType": "PLATFORM_COMMISSION",
+        "amount": platform_fee,
+        "currency": currency,
+        "direction": EntryDirection.DEBIT.value,
+        "description": "Platform fee deducted",
+        "createdAt": now
+    })
     
-    # 3. Designer Earning Registration
-    tx_earning = Transaction(
-        project_id=payment.project_id,
-        payment_id=payment.id,
-        type=TransactionType.DESIGNER_EARNING,
-        amount=net_designer_amount,
-        currency=payment.currency,
-        status=TransactionStatus.COMPLETED
-    )
-    db.add(tx_earning)
-    db.flush()
+    # 5. Designer Earning Registration (Held in escrow, marked PENDING)
+    tx_earning_id = str(uuid.uuid4())
+    transaction.set(db.collection("transactions").document(tx_earning_id), {
+        "id": tx_earning_id,
+        "projectId": project_id,
+        "paymentId": payment_id,
+        "type": TransactionType.DESIGNER_EARNING.value,
+        "amount": net_designer_amount,
+        "currency": currency,
+        "status": TransactionStatus.COMPLETED.value,
+        "createdAt": now
+    })
     
-    designer_earning = DesignerEarning(
-        designer_id=project.assigned_designer_id,
-        project_id=project.id,
-        payment_id=payment.id,
-        gross_amount=payment.amount,
-        platform_fee=platform_fee,
-        net_amount=net_designer_amount,
-        currency=payment.currency,
-        status=EarningStatus.PENDING
-    )
-    db.add(designer_earning)
+    earning_id = str(uuid.uuid4())
+    transaction.set(db.collection("designerEarnings").document(earning_id), {
+        "id": earning_id,
+        "designerId": project_data["designerId"],
+        "projectId": project_id,
+        "paymentId": payment_id,
+        "grossAmount": amount,
+        "commissionAmount": platform_fee,
+        "netAmount": net_designer_amount,
+        "currency": currency,
+        "status": EarningStatus.PENDING.value,
+        "availableAt": None,
+        "createdAt": now,
+        "updatedAt": now
+    })
     
-    # Note: We do NOT add a ledger entry for the designer yet, because the money is held in escrow.
-    # The ledger will be credited to the designer when the project delivery is accepted.
-    
-    db.commit()
-    db.refresh(payment)
+    return PaymentOut(**payment_data)
 
-    # Notify client: payment successful
-    try:
-        from app.models.notification import NotificationType
-        import app.services.notifications as notif_svc
-        notif_svc.create_notification(
-            db=db,
-            recipient_id=payment.client_id,
-            notification_type=NotificationType.PAYMENT_SUCCESS,
-            title="Payment successful",
-            message=f"Payment of {payment.amount} {payment.currency} for project '{project.title}' was successful.",
-            entity_type="payment",
-            entity_id=payment.id,
-            meta_data={"project_id": project.id, "payment_id": payment.id},
-        )
-        db.commit()
-    except Exception:
-        pass
-
-    return payment

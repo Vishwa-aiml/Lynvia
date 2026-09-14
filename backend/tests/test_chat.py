@@ -1,5 +1,5 @@
-﻿"""
-tests/test_chat.py — Project Chat & Messaging tests.
+"""
+tests/test_chat.py � Project Chat & Messaging tests.
 
 Covers:
   - Conversation creation and duplicate prevention
@@ -20,9 +20,9 @@ from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # Helpers
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 def register_and_login(client, email, password="password123", full_name="Test User", role="CLIENT"):
     """Register a user and return (user_id, token, auth_headers)."""
@@ -80,9 +80,9 @@ def setup_project_with_designer(client, db, suffix=""):
     return project_id, c_hdrs, d_hdrs, c_tok, d_tok
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # Conversation tests
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 def test_conversation_created_for_valid_project(client: TestClient, db: Session):
     project_id, c_hdrs, d_hdrs, *_ = setup_project_with_designer(client, db, "cv1")
@@ -106,9 +106,9 @@ def test_designer_can_access_conversation(client: TestClient, db: Session):
     assert r.status_code == 200, r.json()
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # Authorization tests
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 def test_unrelated_client_rejected(client: TestClient, db: Session):
     project_id, c_hdrs, d_hdrs, *_ = setup_project_with_designer(client, db, "auth1")
@@ -130,9 +130,9 @@ def test_unauthenticated_rejected(client: TestClient, db: Session):
     assert r.status_code == 401, r.json()
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # Message send / list tests
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 def test_send_and_list_messages(client: TestClient, db: Session):
     project_id, c_hdrs, d_hdrs, *_ = setup_project_with_designer(client, db, "msg1")
@@ -195,9 +195,9 @@ def test_correct_sender(client: TestClient, db: Session):
     assert r.json()["sender_id"] == c_user_id
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # Reply tests
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 def test_valid_reply(client: TestClient, db: Session):
     project_id, c_hdrs, d_hdrs, *_ = setup_project_with_designer(client, db, "rep1")
@@ -228,9 +228,9 @@ def test_nonexistent_reply_rejected(client: TestClient, db: Session):
     assert r.status_code == 400, r.json()
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # Soft-delete tests
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 def test_sender_can_delete_own_message(client: TestClient, db: Session):
     project_id, c_hdrs, d_hdrs, *_ = setup_project_with_designer(client, db, "del1")
@@ -298,9 +298,9 @@ def test_reply_to_deleted_message_rejected(client: TestClient, db: Session):
     assert r.status_code == 400, r.json()
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # Edit tests
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 def test_sender_can_edit_own_message(client: TestClient, db: Session):
     project_id, c_hdrs, d_hdrs, *_ = setup_project_with_designer(client, db, "edit1")
@@ -339,9 +339,9 @@ def test_other_user_cannot_edit_message(client: TestClient, db: Session):
     assert r.status_code == 403, r.json()
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # Read state tests
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 def test_unread_count_and_mark_read(client: TestClient, db: Session):
     project_id, c_hdrs, d_hdrs, *_ = setup_project_with_designer(client, db, "read1")
@@ -369,9 +369,9 @@ def test_unread_count_and_mark_read(client: TestClient, db: Session):
     assert count_r2.json()["unread_count"] == 0
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # Notification integration tests
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 def test_recipient_gets_new_message_notification(client: TestClient, db: Session):
     project_id, c_hdrs, d_hdrs, *_ = setup_project_with_designer(client, db, "notif1")
@@ -425,9 +425,9 @@ def test_notification_preference_respected(client: TestClient, db: Session):
     assert len(new_msg_notifs) == 0
 
 
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 # WebSocket tests
-# ─────────────────────────────────────────────────────────────────────────────
+# -----------------------------------------------------------------------------
 
 def test_websocket_unauthenticated_rejected(client: TestClient, db: Session):
     project_id, c_hdrs, d_hdrs, *_ = setup_project_with_designer(client, db, "ws1")
@@ -437,7 +437,7 @@ def test_websocket_unauthenticated_rejected(client: TestClient, db: Session):
             ws.receive_text()
     except Exception:
         rejected = True
-    # Either the connection raises or the server closes it — both indicate rejection
+    # Either the connection raises or the server closes it � both indicate rejection
     assert rejected
 
 
