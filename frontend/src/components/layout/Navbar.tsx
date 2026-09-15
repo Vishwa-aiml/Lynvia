@@ -143,7 +143,7 @@ export default function Navbar() {
                     <p className="text-sm font-bold text-slate-800 truncate">{user?.full_name || 'User'}</p>
                     <p className="text-xs text-slate-500 truncate">{user?.email}</p>
                   </div>
-                  <Link to="/workspace" className="block px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-lg font-medium transition-colors">
+                  <Link to="/dashboard" className="block px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-lg font-medium transition-colors">
                     Dashboard
                   </Link>
                   <button 
@@ -160,7 +160,7 @@ export default function Navbar() {
               LOGIN
             </Link>
           )}
-          <Link to="/start" className="text-sm font-medium border border-white/30 px-5 py-2 rounded-full hover:bg-accent hover:border-accent hover:text-white active:scale-95 transition-all duration-300 ml-2 shadow-[0_0_0_0_rgba(168,85,247,0)] hover:shadow-[0_0_15px_rgba(168,85,247,0.5)]">
+          <Link to="/projects/new" className="text-sm font-medium border border-white/30 px-5 py-2 rounded-full hover:bg-accent hover:border-accent hover:text-white active:scale-95 transition-all duration-300 ml-2 shadow-[0_0_0_0_rgba(168,85,247,0)] hover:shadow-[0_0_15px_rgba(168,85,247,0.5)]">
             START A PROJECT
           </Link>
         </div>

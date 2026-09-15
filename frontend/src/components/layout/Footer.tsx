@@ -44,7 +44,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/start" className="text-ivory/80 hover:text-accent transition-colors duration-200">
+                <Link to="/projects/new" className="text-ivory/80 hover:text-accent transition-colors duration-200">
                   Start a Project
                 </Link>
               </li>

@@ -87,3 +87,24 @@ def search_designers(
         })
 
     return results
+
+def search_projects(
+    db: FirestoreClient,
+    category: Optional[str] = None,
+    limit: int = 20,
+    offset: int = 0,
+):
+    query = db.collection("projects").where("status", "==", "OPEN_FOR_PROPOSALS")
+    
+    if category:
+        query = query.where("category", "==", category)
+        
+    docs = query.limit(limit).offset(offset).stream()
+    
+    results = []
+    for doc in docs:
+        p = doc.to_dict()
+        p['id'] = doc.id
+        results.append(p)
+        
+    return results

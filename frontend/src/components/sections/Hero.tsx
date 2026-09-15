@@ -77,7 +77,7 @@ export default function Hero() {
               EXPLORE DESIGNERS
             </Link>
             <Link
-              to="/start"
+              to="/projects/new"
               className="border border-white/40 text-white px-6 md:px-8 py-3 md:py-4 rounded-full font-bold tracking-wider text-xs md:text-sm hover:bg-accent hover:border-accent hover:text-white active:scale-95 transition-all duration-300 text-center whitespace-nowrap shadow-[0_0_0_0_rgba(168,85,247,0)] hover:shadow-[0_0_20px_rgba(168,85,247,0.5)]"
             >
               START A PROJECT

@@ -13,6 +13,6 @@ export const discoveryService = {
   },
 
   getDesignerProfile: async (designerId: string) => {
-    return apiClient.get<DesignerProfile>(`/discovery/designers/${designerId}`);
+    return apiClient.get<DesignerProfile>(`/profiles/designer/${designerId}`);
   }
 };

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Query
 from typing import List, Optional
 from google.cloud.firestore import Client as FirestoreClient
 from app.db.firebase import get_db
-from app.services.discovery import search_designers
+from app.services.discovery import search_designers, search_projects
 from app.schemas.service import DesignerDiscoveryOut
 
 router = APIRouter()
@@ -39,4 +39,14 @@ def discover_designers(
         sort=sort,
     )
     # results are dicts; DesignerDiscoveryOut expects nested objects; rely on ORM objects for services/skills
+    return results
+
+@router.get("/projects")
+def discover_projects(
+    category: Optional[str] = Query(None),
+    limit: int = Query(20, ge=1, le=100),
+    offset: int = Query(0, ge=0),
+    db: FirestoreClient = Depends(get_db),
+):
+    results = search_projects(db, category=category, limit=limit, offset=offset)
     return results
