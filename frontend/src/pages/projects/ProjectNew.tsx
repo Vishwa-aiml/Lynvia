@@ -10,7 +10,7 @@ export default function ProjectNew() {
     description: '',
     category: 'Logo & Branding',
     budget: '',
-    expected_delivery_days: ''
+    deadline_days: ''
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -29,20 +29,25 @@ export default function ProjectNew() {
 
     try {
       const budget = parseFloat(formData.budget);
-      const expected_delivery_days = parseInt(formData.expected_delivery_days);
+      const deadline_days = parseInt(formData.deadline_days);
       
       if (isNaN(budget) || budget < 1000) {
         throw new Error("Budget must be at least ₹1000.");
       }
       
-      if (isNaN(expected_delivery_days) || expected_delivery_days < 1) {
+      if (isNaN(deadline_days) || deadline_days < 1) {
         throw new Error("Delivery days must be at least 1.");
       }
+      
+      const deadlineDate = new Date();
+      deadlineDate.setDate(deadlineDate.getDate() + deadline_days);
 
       await projectService.createProject({
-        ...formData,
+        title: formData.title,
+        description: formData.description,
+        category: formData.category,
         budget,
-        expected_delivery_days
+        deadline: deadlineDate.toISOString()
       });
       
       navigate('/dashboard');
@@ -137,10 +142,10 @@ export default function ProjectNew() {
                 <label className="block text-sm font-bold text-[#9A9AA3] uppercase tracking-wider">Expected Delivery (Days)</label>
                 <input 
                   type="number" 
-                  name="expected_delivery_days"
+                  name="deadline_days"
                   required
                   min="1"
-                  value={formData.expected_delivery_days}
+                  value={formData.deadline_days}
                   onChange={handleChange}
                   placeholder="7"
                   className="w-full bg-[#0D0D0F] border border-[#2A2A32] rounded-xl px-5 py-4 text-white focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors"

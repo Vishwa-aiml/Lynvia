@@ -17,18 +17,14 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   
-  const { } = useAuth();
+  const { fetchUser } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const from = location.state?.from?.pathname || '/workspace';
+  const from = location.state?.from?.pathname || '/';
 
   const navigateBasedOnRole = () => {
-    if (location.state?.from?.pathname) {
-      navigate(from, { replace: true });
-    } else {
-      navigate('/', { replace: true });
-    }
+    navigate(from, { replace: true });
   };
 
   const handleLoginSubmit = async (e: React.FormEvent) => {
@@ -45,8 +41,8 @@ export default function Login() {
       await signInWithEmailAndPassword(auth, email, password);
       
       // Wait for auth context to update and fetch the user profile from the backend
-      // In a real flow, you might wait for the auth state listener to resolve.
       // We will redirect directly. The ProtectedRoute will handle any missing roles.
+      await fetchUser();
       navigateBasedOnRole();
     } catch (err: any) {
       if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
@@ -71,6 +67,7 @@ export default function Login() {
         role: 'CLIENT' // Default to CLIENT if they sign up via Login page. They can change later if needed or we could prompt.
       };
       await authService.register(registerData);
+      await fetchUser();
       navigateBasedOnRole();
     } catch (err: any) {
       if (err.code === 'auth/popup-closed-by-user') {

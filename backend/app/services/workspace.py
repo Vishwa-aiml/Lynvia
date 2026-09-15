@@ -89,6 +89,32 @@ def update_milestone(db: FirestoreClient, project_id: str, milestone_id: str, us
         
     return MilestoneOut(**_update(db.transaction()))
 
+# --- FILES ---
+
+def add_file(db: FirestoreClient, project_id: str, user_id: str, file_in: FileMetadataCreate) -> FileMetadataOut:
+    project_data = verify_workspace_access(db, project_id, user_id)
+    check_project_active(project_data)
+    
+    @transactional
+    def _add_file(transaction):
+        file_id = str(uuid.uuid4())
+        ref = db.collection("projects").document(project_id).collection("files").document(file_id)
+        now = datetime.now(timezone.utc)
+        
+        data = file_in.model_dump()
+        data.update({
+            "id": file_id,
+            "projectId": project_id,
+            "uploaderId": user_id,
+            "createdAt": now
+        })
+        
+        transaction.set(ref, data)
+        _log_event(transaction, db, project_id, user_id, ProjectEventType.FILE_UPLOADED.value, f"File '{data['filename']}' uploaded")
+        return data
+        
+    return FileMetadataOut(**_add_file(db.transaction()))
+
 # --- DELIVERIES ---
 
 def submit_delivery(db: FirestoreClient, project_id: str, user_id: str, delivery_in: DeliveryCreate) -> DeliveryOut:

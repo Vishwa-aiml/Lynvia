@@ -54,8 +54,10 @@ def get_project(db: FirestoreClient, project_id: str) -> Optional[ProjectOut]:
 
 
 def list_client_projects(db: FirestoreClient, client_id: str, limit: int = 20, offset: int = 0) -> List[ProjectOut]:
-    docs = db.collection("projects").where("clientId", "==", client_id).order_by("createdAt", direction="DESCENDING").limit(limit).offset(offset).stream()
-    return [ProjectOut(**doc.to_dict()) for doc in docs]
+    docs = db.collection("projects").where("clientId", "==", client_id).limit(limit).offset(offset).stream()
+    projects = [ProjectOut(**doc.to_dict()) for doc in docs]
+    projects.sort(key=lambda x: x.createdAt, reverse=True)
+    return projects
 
 
 def update_project(db: FirestoreClient, project_id: str, project_in: ProjectUpdate) -> Optional[ProjectOut]:
@@ -89,10 +91,10 @@ def update_project(db: FirestoreClient, project_id: str, project_in: ProjectUpda
 
 
 def submit_proposal(db: FirestoreClient, project_id: str, designer_id: str, proposal_in: ProposalCreate) -> ProposalOut:
-    # Check designer approval
-    designer_docs = db.collection("designerProfiles").where("userId", "==", designer_id).limit(1).get()
-    if not designer_docs or designer_docs[0].to_dict().get("applicationStatus") != "APPROVED":
-        raise ValueError("Only APPROVED designers can submit proposals")
+    # MVP: Allow any designer to submit proposals without an explicit APPROVED profile
+    # designer_docs = db.collection("designerProfiles").where("userId", "==", designer_id).limit(1).get()
+    # if not designer_docs or designer_docs[0].to_dict().get("applicationStatus") != "APPROVED":
+    #     raise ValueError("Only APPROVED designers can submit proposals")
         
     project = get_project(db, project_id)
     if not project or project.status != ProjectStatus.OPEN_FOR_PROPOSALS:
@@ -224,3 +226,9 @@ def accept_project(db: FirestoreClient, project_id: str, designer_id: str):
     })
     
     return get_project(db, project_id)
+
+def list_designer_projects(db: FirestoreClient, designer_id: str, limit: int = 20, offset: int = 0) -> List[ProjectOut]:
+    docs = db.collection("projects").where("designerId", "==", designer_id).limit(limit).offset(offset).stream()
+    projects = [ProjectOut(**doc.to_dict()) for doc in docs]
+    projects.sort(key=lambda x: x.createdAt, reverse=True)
+    return projects

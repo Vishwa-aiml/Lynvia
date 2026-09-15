@@ -46,10 +46,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const response = await authService.getMe();
       setUser(response.data);
       setRole(response.data.role);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to fetch backend user profile:', error);
-      // If we can't get the backend profile (maybe deleted), we should sign out of Firebase too.
-      await logout();
+      // If we can't get the backend profile, we don't immediately log out.
+      // This prevents a race condition during registration where the Firebase user
+      // exists but the backend profile hasn't been created yet.
+      setUser(null);
+      setRole(null);
     } finally {
       setIsLoading(false);
     }

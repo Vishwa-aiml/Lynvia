@@ -19,7 +19,7 @@ class MediaOut(BaseModel):
     created_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class PortfolioCreate(BaseModel):
@@ -53,4 +53,4 @@ class PortfolioOut(BaseModel):
     updated_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True

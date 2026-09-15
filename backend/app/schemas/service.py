@@ -14,7 +14,7 @@ class SkillOut(BaseModel):
     description: Optional[str] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class ServiceCreate(BaseModel):
@@ -45,7 +45,7 @@ class ServiceOut(BaseModel):
     is_active: bool
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class SpecializationCreate(BaseModel):
@@ -60,7 +60,7 @@ class SpecializationOut(BaseModel):
     description: Optional[str] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class AvailabilityCreate(BaseModel):
@@ -77,7 +77,7 @@ class AvailabilityOut(BaseModel):
     hours_per_day: Optional[int] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class DesignerDiscoveryOut(BaseModel):
@@ -95,4 +95,4 @@ class DesignerDiscoveryOut(BaseModel):
     portfolio_count: int = 0
 
     class Config:
-        orm_mode = True
+        from_attributes = True

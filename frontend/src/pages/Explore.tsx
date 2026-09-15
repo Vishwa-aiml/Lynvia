@@ -128,7 +128,7 @@ export default function Explore() {
                           {project.description}
                         </p>
                         <div className="flex items-center justify-between text-xs text-[#9A9AA3]">
-                          <span>{project.expected_delivery_days} days delivery</span>
+                          <span>{project.deadline ? new Date(project.deadline).toLocaleDateString() : 'Flexible Timeline'}</span>
                           <span className="font-bold text-white bg-accent/20 px-2 py-1 rounded">Open</span>
                         </div>
                       </div>

@@ -10,14 +10,19 @@ export interface DesignerProfile {
 
 export interface Project {
   id: string;
+  clientId: string;
+  designerId: string | null;
+  selectedProposalId: string | null;
   title: string;
-  description: string;
   category: string;
+  description: string | null;
+  requirements: string | null;
+  deliverables: string[] | null;
+  referenceFiles: string[] | null;
+  budget: number | null;
+  deadline: string | null;
   status: string; // DRAFT, OPEN_FOR_PROPOSALS, etc.
-  client_id: string;
-  assigned_designer_id: string | null;
-  budget: number;
-  expected_delivery_days: number;
-  created_at: string;
-  updated_at: string;
+  currentPhase: string | null;
+  createdAt: string;
+  updatedAt: string;
 }

@@ -19,6 +19,7 @@ export default function Register() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   
+  const { fetchUser } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,6 +49,7 @@ export default function Register() {
       // After Firebase is created, the backend MUST be notified to store the profile and role
       try {
         await authService.register(formData);
+        await fetchUser(); // Populate context with the newly created profile
       } catch (backendError) {
         console.error("Backend registration failed", backendError);
         // The user is authenticated in Firebase but the backend failed to create a profile.
@@ -81,6 +83,7 @@ export default function Register() {
       };
       
       const response = await authService.register(registerData);
+      await fetchUser(); // Populate context
       
       if (response.data.role === 'ADMIN') {
         navigate('/admin', { replace: true });

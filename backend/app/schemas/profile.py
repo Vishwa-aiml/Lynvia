@@ -25,7 +25,7 @@ class ClientProfileOut(BaseModel):
     website: Optional[str] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class DesignerProfileCreate(BaseModel):
@@ -57,4 +57,4 @@ class DesignerProfileOut(BaseModel):
     years_experience: Optional[int] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True

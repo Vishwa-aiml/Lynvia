@@ -20,21 +20,27 @@ def create_project(
     return project
 
 
-@router.get("/", response_model=list[ProjectOut])
-def list_projects(
+@router.get("/client", response_model=list[ProjectOut])
+def get_client_projects(
     db: FirestoreClient = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(require_client_role),
     limit: int = Query(20, ge=1, le=100),
     offset: int = Query(0, ge=0),
 ):
-    """List projects. If client, lists their projects. If designer, could list assigned projects (needs separate implementation, currently defaults to client projects)."""
-    if current_user.role.value == "CLIENT":
-        projects = project_svc.list_client_projects(db, current_user.id, limit=limit, offset=offset)
-        return projects
-    else:
-        # For simplicity, returning empty list for designers here. 
-        # A real implementation would fetch projects where designerId == current_user.id
-        return []
+    """List projects for the authenticated client."""
+    projects = project_svc.list_client_projects(db, current_user.id, limit=limit, offset=offset)
+    return projects
+
+@router.get("/designer", response_model=list[ProjectOut])
+def get_designer_projects(
+    db: FirestoreClient = Depends(get_db),
+    current_user: User = Depends(require_designer_role),
+    limit: int = Query(20, ge=1, le=100),
+    offset: int = Query(0, ge=0),
+):
+    """List projects assigned to the authenticated designer."""
+    projects = project_svc.list_designer_projects(db, current_user.id, limit=limit, offset=offset)
+    return projects
 
 
 @router.get("/{project_id}", response_model=ProjectOut)
@@ -67,6 +73,46 @@ def update_project(
     except ValueError as e:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
     return updated
+
+
+@router.post("/{project_id}/publish", response_model=ProjectOut)
+def publish_project(
+    project_id: str,
+    db: FirestoreClient = Depends(get_db),
+    current_user: User = Depends(require_client_role),
+):
+    """Publish a draft project."""
+    project = project_svc.get_project(db, project_id)
+    if not project:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
+    if project.clientId != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
+        
+    try:
+        updated = project_svc.update_project(db, project_id, ProjectUpdate(status="OPEN_FOR_PROPOSALS"))
+        return updated
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+
+@router.post("/{project_id}/cancel", response_model=ProjectOut)
+def cancel_project(
+    project_id: str,
+    db: FirestoreClient = Depends(get_db),
+    current_user: User = Depends(require_client_role),
+):
+    """Cancel a project."""
+    project = project_svc.get_project(db, project_id)
+    if not project:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Project not found")
+    if project.clientId != current_user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not authorized")
+        
+    try:
+        updated = project_svc.update_project(db, project_id, ProjectUpdate(status="CANCELLED"))
+        return updated
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
 
 @router.post("/{project_id}/proposals", response_model=ProposalOut, status_code=status.HTTP_201_CREATED)

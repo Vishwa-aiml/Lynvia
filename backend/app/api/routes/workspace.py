@@ -8,6 +8,7 @@ from app.models.user import User
 from app.schemas.workspace import (
     ProjectWorkspaceOut,
     MilestoneCreate, MilestoneUpdate, MilestoneOut,
+    FileMetadataCreate, FileMetadataOut,
     DeliveryCreate, DeliveryOut,
     RevisionCreate, RevisionOut
 )
@@ -47,6 +48,18 @@ def update_milestone(
     current_user: User = Depends(get_current_user)
 ):
     return workspace_service.update_milestone(db, project_id, milestone_id, current_user.id, milestone_in)
+
+
+# --- FILES ---
+
+@router.post("/files", response_model=FileMetadataOut, status_code=status.HTTP_201_CREATED)
+def add_file(
+    project_id: str, 
+    file_in: FileMetadataCreate, 
+    db: FirestoreClient = Depends(get_db), 
+    current_user: User = Depends(get_current_user)
+):
+    return workspace_service.add_file(db, project_id, current_user.id, file_in)
 
 
 # --- DELIVERIES & REVISIONS ---
