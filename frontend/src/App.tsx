@@ -11,6 +11,10 @@ import DesignerGuidelines from "./pages/DesignerGuidelines";
 import DesignerTerms from "./pages/DesignerTerms";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
+import ClientDashboard from "./pages/client/ClientDashboard";
+import DesignerDashboard from "./pages/designer/DesignerDashboard";
+import ProjectNew from "./pages/projects/ProjectNew";
 
 function App() {
   return (
@@ -28,6 +32,25 @@ function App() {
             <Route path="designer-terms" element={<DesignerTerms />} />
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
+            
+            {/* Client Routes */}
+            <Route path="dashboard" element={
+              <ProtectedRoute allowedRoles={['CLIENT']}>
+                <ClientDashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="projects/new" element={
+              <ProtectedRoute allowedRoles={['CLIENT']}>
+                <ProjectNew />
+              </ProtectedRoute>
+            } />
+
+            {/* Designer Routes */}
+            <Route path="designer/dashboard" element={
+              <ProtectedRoute allowedRoles={['DESIGNER']}>
+                <DesignerDashboard />
+              </ProtectedRoute>
+            } />
           </Route>
         </Routes>
       </Router>

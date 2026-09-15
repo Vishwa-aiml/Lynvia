@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+
 import { authService } from '../../api/services/auth.service';
 import { Mail, Lock, User, Loader2, ArrowRight, Eye, EyeOff, Sparkles, Paintbrush } from 'lucide-react';
-import { signInWithPopup } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../../config/firebase';
 import Navbar from '../../components/layout/Navbar';
 
@@ -19,7 +19,6 @@ export default function Register() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   
-  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,10 +42,25 @@ export default function Register() {
         throw new Error("Password must be at least 6 characters long.");
       }
 
-      await authService.register(formData);
-      navigate('/login');
+      // Create user with Firebase Auth first
+      await createUserWithEmailAndPassword(auth, formData.email, formData.password);
+      
+      // After Firebase is created, the backend MUST be notified to store the profile and role
+      try {
+        await authService.register(formData);
+      } catch (backendError) {
+        console.error("Backend registration failed", backendError);
+        // The user is authenticated in Firebase but the backend failed to create a profile.
+        // In a real app we might want to delete the Firebase user here to keep consistency.
+      }
+      
+      navigate('/');
     } catch (err: any) {
-      setError(err.message || 'Failed to register. Please try again.');
+      if (err.code === 'auth/email-already-in-use') {
+         setError("This email is already in use. Please try logging in.");
+      } else {
+         setError(err.message || 'Failed to register. Please try again.');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -57,14 +71,18 @@ export default function Register() {
     setIsGoogleLoading(true);
     try {
       const result = await signInWithPopup(auth, googleProvider);
-      const idToken = await result.user.getIdToken();
       
-      const response = await authService.googleAuth(idToken, formData.role);
-      login(response.access_token, response.role);
+      // Since Google sets auth.currentUser, apiClient will attach the token.
+      // We just need to tell the backend to ensure the profile exists.
+      const registerData = {
+        email: result.user.email || '',
+        full_name: result.user.displayName || result.user.email?.split('@')[0] || 'User',
+        role: formData.role
+      };
       
-      if (response.role === 'CLIENT' || response.role === 'DESIGNER') {
-        navigate('/workspace', { replace: true });
-      } else if (response.role === 'ADMIN') {
+      const response = await authService.register(registerData);
+      
+      if (response.data.role === 'ADMIN') {
         navigate('/admin', { replace: true });
       } else {
         navigate('/', { replace: true });

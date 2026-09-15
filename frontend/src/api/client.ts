@@ -1,59 +1,55 @@
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+import axios from 'axios';
+import { auth } from '../config/firebase';
 
-class ApiError extends Error {
-  status: number;
-  data: any;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
 
-  constructor(status: number, message: string, data: any = null) {
-    super(message);
-    this.status = status;
-    this.data = data;
+const apiClient = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// Request interceptor to attach Firebase ID Token
+apiClient.interceptors.request.use(
+  async (config) => {
+    const user = auth.currentUser;
+    if (user) {
+      try {
+        // Force refresh if token is close to expiry or just get the current token
+        const token = await user.getIdToken();
+        config.headers.Authorization = `Bearer ${token}`;
+      } catch (error) {
+        console.error("Error getting Firebase token", error);
+      }
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
-}
+);
 
-async function request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-  const token = localStorage.getItem('lynvia_token');
-  
-  const headers = new Headers(options.headers);
-  headers.set('Content-Type', 'application/json');
-  
-  if (token) {
-    headers.set('Authorization', `Bearer ${token}`);
+// Response interceptor to handle global errors (e.g., 401 Unauthorized)
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response) {
+      if (error.response.status === 401) {
+        // The backend rejected the token or token was missing.
+        // In a real app, you might trigger a logout or a redirect to /login here.
+        console.warn('Unauthorized access. Please login again.');
+      } else if (error.response.status === 403) {
+        console.warn('Forbidden access.');
+      } else if (error.response.status >= 500) {
+        console.error('Server error', error.response.data);
+      }
+    } else if (error.request) {
+      // The request was made but no response was received
+      console.error('Network Error: Make sure the backend is running.');
+    }
+    return Promise.reject(error);
   }
+);
 
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    ...options,
-    headers,
-  });
-
-  let data;
-  try {
-    data = await response.json();
-  } catch (e) {
-    data = null;
-  }
-
-  if (!response.ok) {
-    throw new ApiError(
-      response.status,
-      data?.detail || response.statusText || 'An error occurred',
-      data
-    );
-  }
-
-  return data as T;
-}
-
-export const apiClient = {
-  get: <T>(endpoint: string, options?: RequestInit) => 
-    request<T>(endpoint, { ...options, method: 'GET' }),
-  
-  post: <T>(endpoint: string, body: any, options?: RequestInit) => 
-    request<T>(endpoint, { ...options, method: 'POST', body: JSON.stringify(body) }),
-    
-  put: <T>(endpoint: string, body: any, options?: RequestInit) => 
-    request<T>(endpoint, { ...options, method: 'PUT', body: JSON.stringify(body) }),
-    
-  delete: <T>(endpoint: string, options?: RequestInit) => 
-    request<T>(endpoint, { ...options, method: 'DELETE' }),
-};
+export default apiClient;

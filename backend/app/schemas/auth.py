@@ -5,7 +5,6 @@ from app.models.user import UserRole
 
 class UserCreate(BaseModel):
     email: EmailStr
-    password: str = Field(..., min_length=8)
     full_name: Optional[str] = None
     role: Optional[UserRole] = UserRole.CLIENT
 

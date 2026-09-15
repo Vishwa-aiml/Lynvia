@@ -3,7 +3,7 @@ import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { authService } from '../../api/services/auth.service';
 import { Mail, Lock, Loader2, ArrowRight, Eye, EyeOff } from 'lucide-react';
-import { signInWithPopup } from 'firebase/auth';
+import { signInWithPopup, signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { auth, googleProvider } from '../../config/firebase';
 import Navbar from '../../components/layout/Navbar';
 
@@ -17,23 +17,17 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   
-  const { login } = useAuth();
+  const { } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
   const from = location.state?.from?.pathname || '/workspace';
 
-  const navigateBasedOnRole = (role: string) => {
+  const navigateBasedOnRole = () => {
     if (location.state?.from?.pathname) {
       navigate(from, { replace: true });
     } else {
-      if (role === 'CLIENT' || role === 'DESIGNER') {
-        navigate('/workspace', { replace: true });
-      } else if (role === 'ADMIN') {
-        navigate('/admin', { replace: true });
-      } else {
-        navigate('/', { replace: true });
-      }
+      navigate('/', { replace: true });
     }
   };
 
@@ -47,11 +41,15 @@ export default function Login() {
         throw new Error("Please enter both email and password.");
       }
       
-      const response = await authService.login({ email, password });
-      login(response.access_token, response.role);
-      navigateBasedOnRole(response.role);
+      // Use native Firebase authentication
+      await signInWithEmailAndPassword(auth, email, password);
+      
+      // Wait for auth context to update and fetch the user profile from the backend
+      // In a real flow, you might wait for the auth state listener to resolve.
+      // We will redirect directly. The ProtectedRoute will handle any missing roles.
+      navigateBasedOnRole();
     } catch (err: any) {
-      if (err.response?.status === 401 || err.message.includes('credential')) {
+      if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
         setError("Incorrect email or password.");
       } else {
         setError(err.message || 'Something went wrong. Please try again.');
@@ -66,14 +64,17 @@ export default function Login() {
     setIsGoogleLoading(true);
     try {
       const result = await signInWithPopup(auth, googleProvider);
-      const idToken = await result.user.getIdToken();
-      
-      const response = await authService.googleAuth(idToken);
-      login(response.access_token, response.role);
-      navigateBasedOnRole(response.role);
+      // Still call our backend to ensure they have a profile created if it's their first time.
+      const registerData = {
+        email: result.user.email || '',
+        full_name: result.user.displayName || result.user.email?.split('@')[0] || 'User',
+        role: 'CLIENT' // Default to CLIENT if they sign up via Login page. They can change later if needed or we could prompt.
+      };
+      await authService.register(registerData);
+      navigateBasedOnRole();
     } catch (err: any) {
       if (err.code === 'auth/popup-closed-by-user') {
-        return; // Ignore
+        return;
       }
       setError(err.message || 'Google sign-in failed. Please try again.');
     } finally {
@@ -92,8 +93,9 @@ export default function Login() {
         throw new Error("Please enter a valid email address.");
       }
       
-      await authService.forgotPassword(email);
-      setSuccessMsg("If an account exists, a recovery code has been sent via email/SMS.");
+      // Use Firebase native password reset
+      await sendPasswordResetEmail(auth, email);
+      setSuccessMsg("If an account exists, a recovery link has been sent to your email.");
       setTimeout(() => {
         setIsForgotPassword(false);
         setSuccessMsg('');
@@ -109,7 +111,9 @@ export default function Login() {
     <div className="min-h-screen bg-[#0D0D0F] flex flex-col relative overflow-hidden font-sans">
       <Navbar />
 
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-accent/5 rounded-full blur-[120px] pointer-events-none" />
+      {/* Playful Colorful Background Gradients */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br from-pink-500/20 to-purple-500/20 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-tr from-blue-500/20 to-teal-500/20 rounded-full blur-[100px] pointer-events-none" />
 
       <main className="flex-1 flex items-center justify-center px-6 py-32 z-10">
         <div className="max-w-[440px] w-full">

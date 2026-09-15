@@ -19,7 +19,6 @@ class UserCreate(UserBase):
 
 class User(UserBase):
     id: str
-    hashed_password: str
     created_at: datetime
     updated_at: datetime
 

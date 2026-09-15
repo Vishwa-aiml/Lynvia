@@ -5,7 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, user, logout } = useAuth();
   const logoRef = useRef<HTMLAnchorElement>(null);
 
   useEffect(() => {
@@ -128,17 +128,33 @@ export default function Navbar() {
         
         <div className="flex items-center gap-4">
           {isAuthenticated ? (
-            <>
-              <Link to="/workspace" className="text-sm font-medium hover:opacity-70 transition-opacity">
-                WORKSPACE
-              </Link>
-              <button 
-                onClick={logout} 
-                className="text-sm font-medium hover:opacity-70 transition-opacity uppercase"
-              >
-                LOGOUT
+            <div className="relative group">
+              <button className="flex items-center gap-2 hover:opacity-80 transition-opacity focus:outline-none">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-violet-500 to-fuchsia-500 flex items-center justify-center text-white font-bold text-sm shadow-md border-2 border-white/20">
+                  {/* Assuming user is available via useAuth, but if not we can just show a default icon. We should fetch user from useAuth */}
+                  <span className="uppercase">{user?.full_name?.charAt(0) || user?.email?.charAt(0) || 'U'}</span>
+                </div>
               </button>
-            </>
+              
+              {/* Dropdown Menu */}
+              <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-slate-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-right scale-95 group-hover:scale-100">
+                <div className="p-2">
+                  <div className="px-3 py-2 border-b border-slate-100 mb-2">
+                    <p className="text-sm font-bold text-slate-800 truncate">{user?.full_name || 'User'}</p>
+                    <p className="text-xs text-slate-500 truncate">{user?.email}</p>
+                  </div>
+                  <Link to="/workspace" className="block px-3 py-2 text-sm text-slate-700 hover:bg-slate-50 rounded-lg font-medium transition-colors">
+                    Dashboard
+                  </Link>
+                  <button 
+                    onClick={logout} 
+                    className="w-full text-left px-3 py-2 text-sm text-rose-600 hover:bg-rose-50 rounded-lg font-medium transition-colors mt-1"
+                  >
+                    Logout
+                  </button>
+                </div>
+              </div>
+            </div>
           ) : (
             <Link to="/login" className="text-sm font-medium hover:opacity-70 transition-opacity">
               LOGIN

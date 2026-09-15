@@ -12,7 +12,7 @@ from app.schemas.chat import (
     MessageListResponse, ChatUnreadCountResponse, MarkChatReadResponse,
 )
 from app.services import chat as chat_svc
-from app.utils.security import decode_access_token
+import firebase_admin.auth as fb_auth
 
 logger = logging.getLogger(__name__)
 router = APIRouter(tags=["chat"])
@@ -138,8 +138,8 @@ async def ws_chat(
     db: FirestoreClient = Depends(get_db)
 ):
     try:
-        payload = decode_access_token(token)
-        user_id = payload.get("sub")
+        payload = fb_auth.verify_id_token(token)
+        user_id = payload.get("uid")
         if not user_id:
             raise ValueError("Invalid token subject")
     except Exception as exc:
