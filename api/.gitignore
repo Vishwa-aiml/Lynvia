@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+*.tsbuildinfo
+
+# Environment & Credentials
+.env
+.env*
+!.env.example
+*.pem
+*.key
+*.p12
+*service*account*.json
+
+# Logs
+*.log
+npm-debug.log*
+
+# Test coverage
+coverage/

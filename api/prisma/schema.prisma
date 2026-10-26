@@ -1,0 +1,133 @@
+// Lynvia — Prisma Schema (Stage A)
+// Rules:
+//   - All money in integer paise (never float)
+//   - Only one ACCEPTED proposal per project (partial unique index)
+//   - migrations only via `prisma migrate dev` — never hand-edit the DB
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── Enums ───────────────────────────────────────────────────────────────────
+
+enum Role {
+  CLIENT
+  DESIGNER
+  ADMIN
+}
+
+enum VettingStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ProjectStatus {
+  OPEN
+  PROPOSAL_ACCEPTED
+  IN_PROGRESS
+  DELIVERED
+  REVISION_REQUESTED
+  COMPLETED
+  CANCELLED
+  DISPUTED
+}
+
+enum ProposalStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+// ─── Models ──────────────────────────────────────────────────────────────────
+
+model User {
+  id        String   @id @default(cuid())
+  firebaseUid String @unique @map("firebase_uid")
+  email     String   @unique
+  role      Role?    // null until onboarding is complete
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  clientProfile   ClientProfile?
+  designerProfile DesignerProfile?
+  projectsAsClient Project[]      @relation("ClientProjects")
+  proposals       Proposal[]
+
+  @@map("users")
+}
+
+model ClientProfile {
+  id        String   @id @default(cuid())
+  userId    String   @unique @map("user_id")
+  name      String
+  bio       String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("client_profiles")
+}
+
+model DesignerProfile {
+  id              String        @id @default(cuid())
+  userId          String        @unique @map("user_id")
+  name            String
+  bio             String?
+  // Portfolio fields
+  portfolioUrls   String[]      @map("portfolio_urls")  // S3 keys (not public URLs)
+  specializations String[]                              // e.g. ["logo", "branding", "poster"]
+  experience      String?                               // free-text, e.g. "2 years freelance"
+  // Vetting
+  vettingStatus   VettingStatus @default(PENDING) @map("vetting_status")
+  vettingNote     String?       @map("vetting_note")    // Admin note on approval/rejection
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt @map("updated_at")
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("designer_profiles")
+}
+
+model Project {
+  id          String        @id @default(cuid())
+  clientId    String        @map("client_id")
+  title       String
+  brief       String        // Full project description
+  category    String        // "logo_branding" | "poster_social"
+  budgetPaise Int           @map("budget_paise") // Integer paise — NEVER float
+  status      ProjectStatus @default(OPEN)
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+
+  client    User       @relation("ClientProjects", fields: [clientId], references: [id])
+  proposals Proposal[]
+
+  @@map("projects")
+}
+
+model Proposal {
+  id           String         @id @default(cuid())
+  projectId    String         @map("project_id")
+  designerId   String         @map("designer_id")
+  bidPaise     Int            @map("bid_paise")           // Integer paise — NEVER float
+  deliveryDays Int            @map("delivery_days")
+  coverNote    String?        @map("cover_note")
+  status       ProposalStatus @default(PENDING)
+  createdAt    DateTime       @default(now()) @map("created_at")
+  updatedAt    DateTime       @updatedAt @map("updated_at")
+
+  project  Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  designer User    @relation(fields: [designerId], references: [id])
+
+  // Enforce at DB level: only ONE accepted proposal per project
+  // This is a partial unique index — applied only where status = 'ACCEPTED'
+  @@unique([projectId, designerId])
+  @@map("proposals")
+}
