@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Lynvia — India-first Creative Services Marketplace
 
 ## Monorepo Structure
@@ -44,3 +45,4 @@ npm run db:studio    # Open Prisma Studio
 - All money is stored as integer paise (never float)
 - Clerk webhook is the ONLY place a `users` row is created
 - Admin role (`deepikshas@lynvia.in`) is set manually in DB only
+
