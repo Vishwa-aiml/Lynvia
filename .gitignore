@@ -53,3 +53,8 @@ coverage/
 
 # Turbo
 .turbo/
+
+# Git backups
+.git-backup/
+*.git-backup*
+web/.git-backup/
