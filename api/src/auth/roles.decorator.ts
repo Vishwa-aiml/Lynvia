@@ -5,11 +5,11 @@ export const ROLES_KEY = 'roles';
 
 /**
  * Decorator to restrict an endpoint to specific roles.
- * Always pair with @UseGuards(ClerkAuthGuard).
+ * Always pair with an authentication guard (e.g. FirebaseAuthGuard).
  *
  * Example:
  *   @Roles(Role.ADMIN)
- *   @UseGuards(ClerkAuthGuard)
+ *   @UseGuards(FirebaseAuthGuard)
  *   @Get('admin/users')
  *   getUsers() { ... }
  */

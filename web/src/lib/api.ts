@@ -8,8 +8,8 @@ export const api = axios.create({
 })
 
 /**
- * Attach Clerk JWT to every request.
- * Call this once in a client component after Clerk loads.
+ * Attach auth Bearer token to every request.
+ * Call this in a client component or auth hook when session token changes.
  */
 export function setAuthToken(token: string | null) {
   if (token) {

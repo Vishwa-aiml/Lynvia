@@ -3,11 +3,11 @@ import { User } from '@prisma/client';
 
 /**
  * Extracts the authenticated DB user from request.
- * req.user is set by ClerkAuthGuard after DB lookup.
+ * req.user is set by authentication guard after DB lookup.
  *
  * Example:
  *   @Get('me')
- *   @UseGuards(ClerkAuthGuard)
+ *   @UseGuards(FirebaseAuthGuard)
  *   getMe(@CurrentUser() user: User) { ... }
  */
 export const CurrentUser = createParamDecorator(

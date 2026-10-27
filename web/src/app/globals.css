@@ -292,9 +292,3 @@ label.field-label {
 .animate-delay-2 { animation-delay: 0.2s; opacity: 0; }
 .animate-delay-3 { animation-delay: 0.3s; opacity: 0; }
 
-/* Clerk theming override */
-.cl-card {
-  background: var(--bg-elevated) !important;
-  border: 1px solid var(--border) !important;
-  box-shadow: var(--shadow-md) !important;
-}
