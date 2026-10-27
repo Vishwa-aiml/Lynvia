@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # Lynvia — India-first Creative Services Marketplace
 
 ## Monorepo Structure
