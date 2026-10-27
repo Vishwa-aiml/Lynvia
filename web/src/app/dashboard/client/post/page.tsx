@@ -1,11 +1,12 @@
 'use client'
 
-import { useForm, type FieldValues } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { projectsApi, rupeesToPaise } from '@/lib/api'
 import { useRouter } from 'next/navigation'
+import axios from 'axios'
 
 const schema = z.object({
   title: z.string().min(5, 'Title must be at least 5 characters').max(150),
@@ -13,6 +14,8 @@ const schema = z.object({
   category: z.enum(['logo_branding', 'poster_social']),
   budgetRupees: z.coerce.number().min(500, 'Minimum budget is ₹500').max(500000),
 })
+
+type PostProjectForm = z.infer<typeof schema>
 
 export default function PostProjectPage() {
   const router = useRouter()
@@ -23,15 +26,13 @@ export default function PostProjectPage() {
     handleSubmit,
     watch,
     formState: { errors },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } = useForm<FieldValues>({
-    resolver: zodResolver(schema) as any,
+  } = useForm<PostProjectForm>({
+    resolver: zodResolver(schema),
     defaultValues: { category: 'logo_branding' },
   })
 
   const { mutate, isPending, error } = useMutation({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    mutationFn: (data: any) =>
+    mutationFn: (data: PostProjectForm) =>
       projectsApi.create({
         title: data.title,
         brief: data.brief,
@@ -141,7 +142,7 @@ export default function PostProjectPage() {
 
         {error && (
           <p style={{ color: 'var(--error)', fontSize: '0.875rem' }}>
-            {(error as any).response?.data?.message ?? 'Something went wrong. Please try again.'}
+            {axios.isAxiosError(error) ? error.response?.data?.message ?? error.message : 'Something went wrong. Please try again.'}
           </p>
         )}
 

@@ -5,7 +5,6 @@ import {
   Patch,
   Param,
   Body,
-  Query,
   UseGuards,
 } from '@nestjs/common';
 import { FirebaseAuthGuard } from '../auth/firebase-auth.guard';

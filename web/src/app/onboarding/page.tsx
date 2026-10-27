@@ -8,6 +8,7 @@ import { authApi } from '@/lib/api'
 import { AuthTokenSync } from '@/components/auth-token-sync'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import axios from 'axios'
 
 const schema = z.object({
   role: z.enum(['CLIENT', 'DESIGNER']),
@@ -138,7 +139,7 @@ export default function OnboardingPage() {
 
               {error && (
                 <p style={{ color: 'var(--error)', fontSize: '0.875rem' }}>
-                  {(error as any).response?.data?.message ?? 'Something went wrong. Please try again.'}
+                  {axios.isAxiosError(error) ? error.response?.data?.message ?? error.message : 'Something went wrong. Please try again.'}
                 </p>
               )}
 

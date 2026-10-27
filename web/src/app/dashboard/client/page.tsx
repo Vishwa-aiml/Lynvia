@@ -18,8 +18,16 @@ function StatusBadge({ status }: { status: string }) {
   return <span className={`badge ${map[status] ?? 'badge-pending'}`}>{status.replace(/_/g, ' ')}</span>
 }
 
+interface ClientProject {
+  id: string
+  title: string
+  status: string
+  budgetPaise: number
+  _count: { proposals: number }
+}
+
 export default function ClientDashboard() {
-  const { data: projects, isLoading } = useQuery({
+  const { data: projects, isLoading } = useQuery<ClientProject[]>({
     queryKey: ['my-projects'],
     queryFn: projectsApi.mine,
   })
@@ -51,7 +59,7 @@ export default function ClientDashboard() {
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          {projects.map((project: any) => (
+          {projects.map((project: ClientProject) => (
             <Link key={project.id} href={`/dashboard/client/projects/${project.id}`} style={{ textDecoration: 'none' }}>
               <div className="card" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.5rem', cursor: 'pointer' }}>
                 <div style={{ flex: 1 }}>

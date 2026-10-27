@@ -97,6 +97,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         router.replace('/dashboard/client')
       }
     }
+    if (me && !me.onboardingComplete) {
+      router.replace('/onboarding')
+    }
   }, [me, router])
 
   const isLoading = authLoading || meLoading
@@ -119,7 +122,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   // Not onboarded — redirect to onboarding
   if (me && !me.onboardingComplete) {
-    if (typeof window !== 'undefined') window.location.href = '/onboarding'
     return null
   }
 

@@ -1,9 +1,34 @@
 'use client'
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { projectsApi, proposalsApi, paiseToRupees } from '@/lib/api'
+import { projectsApi, paiseToRupees } from '@/lib/api'
 import { useParams, useRouter } from 'next/navigation'
 import { useState } from 'react'
+
+interface ProposalItem {
+  id: string
+  status: string
+  bidPaise: number
+  deliveryDays: number
+  coverNote?: string
+  designer?: {
+    email?: string
+    designerProfile?: {
+      name?: string
+      specializations?: string[]
+    }
+  }
+}
+
+interface ProjectDetail {
+  id: string
+  title: string
+  brief: string
+  category: string
+  status: string
+  budgetPaise: number
+  proposals?: ProposalItem[]
+}
 
 export default function ClientProjectDetailPage() {
   const params = useParams<{ id: string }>()
@@ -11,7 +36,7 @@ export default function ClientProjectDetailPage() {
   const queryClient = useQueryClient()
   const [accepting, setAccepting] = useState<string | null>(null)
 
-  const { data: project, isLoading } = useQuery({
+  const { data: project, isLoading } = useQuery<ProjectDetail>({
     queryKey: ['project', params.id],
     queryFn: () => projectsApi.get(params.id),
   })
@@ -28,8 +53,8 @@ export default function ClientProjectDetailPage() {
   if (isLoading) return <div style={{ color: 'var(--text-muted)' }}>Loading project...</div>
   if (!project) return <div style={{ color: 'var(--error)' }}>Project not found.</div>
 
-  const proposals = project.proposals ?? []
-  const acceptedProposal = proposals.find((p: any) => p.status === 'ACCEPTED')
+  const proposals: ProposalItem[] = project.proposals ?? []
+  const acceptedProposal = proposals.find((p: ProposalItem) => p.status === 'ACCEPTED')
 
   return (
     <div style={{ maxWidth: '800px' }}>
@@ -69,7 +94,7 @@ export default function ClientProjectDetailPage() {
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            {proposals.map((proposal: any) => (
+            {proposals.map((proposal: ProposalItem) => (
               <div key={proposal.id} className="card" style={{
                 borderColor: proposal.status === 'ACCEPTED' ? 'var(--accent)' : 'var(--border)',
                 borderWidth: proposal.status === 'ACCEPTED' ? '2px' : '1px',

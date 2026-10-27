@@ -1,9 +1,7 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { FirebaseAuthGuard } from '../auth/firebase-auth.guard';
 import { Roles } from '../auth/roles.decorator';
-import { CurrentUser } from '../auth/current-user.decorator';
 import { PrismaService } from '../prisma/prisma.service';
-import { User } from '@prisma/client';
 
 /**
  * Users Controller — minimal, admin-only user management.

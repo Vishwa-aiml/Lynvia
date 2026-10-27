@@ -4,11 +4,20 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { designersApi } from '@/lib/api'
 import { useState } from 'react'
 
+interface PendingDesigner {
+  id: string
+  name: string
+  bio?: string
+  specializations?: string[]
+  portfolioUrls?: string[]
+  user?: { email?: string }
+}
+
 export default function AdminVettingPage() {
   const queryClient = useQueryClient()
   const [note, setNote] = useState<Record<string, string>>({})
 
-  const { data: pending, isLoading } = useQuery({
+  const { data: pending, isLoading } = useQuery<PendingDesigner[]>({
     queryKey: ['pending-designers'],
     queryFn: designersApi.pendingDesigners,
     refetchInterval: 60_000,
@@ -41,7 +50,7 @@ export default function AdminVettingPage() {
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-          {pending.map((designer: any) => (
+          {pending.map((designer: PendingDesigner) => (
             <div key={designer.id} className="card">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
                 <div>

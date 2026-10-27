@@ -1,5 +1,4 @@
 import { vi } from 'vitest';
-import { PrismaService } from '../src/prisma/prisma.service';
 
 export type MockPrismaService = {
   $connect: ReturnType<typeof vi.fn>;

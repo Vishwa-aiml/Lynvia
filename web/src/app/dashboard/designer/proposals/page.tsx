@@ -8,8 +8,20 @@ function StatusBadge({ status }: { status: string }) {
   return <span className={`badge ${cls}`}>{status}</span>
 }
 
+interface MyProposalItem {
+  id: string
+  status: string
+  bidPaise: number
+  deliveryDays: number
+  coverNote?: string
+  project?: {
+    title: string
+    category: string
+  }
+}
+
 export default function MyProposalsPage() {
-  const { data: proposals, isLoading } = useQuery({
+  const { data: proposals, isLoading } = useQuery<MyProposalItem[]>({
     queryKey: ['my-proposals'],
     queryFn: proposalsApi.mine,
     refetchInterval: 30_000,
@@ -19,7 +31,7 @@ export default function MyProposalsPage() {
     <div>
       <div style={{ marginBottom: '2.5rem' }}>
         <h1 className="text-display-md" style={{ marginBottom: '0.5rem' }}>My Proposals</h1>
-        <p style={{ color: 'var(--text-secondary)' }}>Track the status of every proposal you've submitted.</p>
+        <p style={{ color: 'var(--text-secondary)' }}>Track the status of every proposal you&apos;ve submitted.</p>
       </div>
 
       {isLoading ? (
@@ -32,7 +44,7 @@ export default function MyProposalsPage() {
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          {proposals.map((proposal: any) => (
+          {proposals.map((proposal: MyProposalItem) => (
             <div key={proposal.id} className="card" style={{
               borderLeft: `4px solid ${proposal.status === 'ACCEPTED' ? 'var(--accent)' : proposal.status === 'REJECTED' ? 'var(--error)' : 'var(--border)'}`,
               borderRadius: '0 var(--radius-lg) var(--radius-lg) 0',

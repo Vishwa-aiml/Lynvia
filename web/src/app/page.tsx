@@ -34,7 +34,7 @@ export default function HomePage() {
                 textTransform: 'uppercase',
                 marginBottom: '1.25rem',
               }}>
-                India's creative marketplace
+                India&apos;s creative marketplace
               </p>
 
               <h1 className="text-display-xl animate-fade-up animate-delay-1" style={{
@@ -51,7 +51,7 @@ export default function HomePage() {
                 marginBottom: '2.5rem',
               }}>
                 Post your project. Get proposals from vetted Indian designers.
-                Logos, branding, posters — work you'll be proud of.
+                Logos, branding, posters — work you&apos;ll be proud of.
               </p>
 
               <div className="animate-fade-up animate-delay-3" style={{
@@ -246,7 +246,7 @@ export default function HomePage() {
               color: 'var(--text-primary)',
             }}>Lynvia</span>
             <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
-              © 2026 Lynvia. India's creative marketplace.
+              © 2026 Lynvia. India&apos;s creative marketplace.
             </p>
           </div>
         </footer>

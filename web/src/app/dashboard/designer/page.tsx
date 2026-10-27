@@ -6,7 +6,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { useState } from 'react'
-import Link from 'next/link'
+import axios from 'axios'
 
 const proposalSchema = z.object({
   bidRupees: z.coerce.number().min(100, 'Minimum bid ₹100'),
@@ -15,12 +15,24 @@ const proposalSchema = z.object({
 })
 type ProposalForm = z.infer<typeof proposalSchema>
 
-function ProposalModal({ project, onClose }: { project: any; onClose: () => void }) {
+interface OpenProject {
+  id: string
+  title: string
+  brief: string
+  category: string
+  budgetPaise: number
+  _count?: { proposals: number }
+  proposals?: Array<{ id: string; status: string; bidPaise: number }>
+}
+
+function ProposalModal({ project, onClose }: { project: OpenProject; onClose: () => void }) {
   const queryClient = useQueryClient()
-  const { register, handleSubmit, formState: { errors } } = useForm({ resolver: zodResolver(proposalSchema) as any })
+  const { register, handleSubmit, formState: { errors } } = useForm<ProposalForm>({
+    resolver: zodResolver(proposalSchema),
+  })
 
   const { mutate, isPending, error } = useMutation({
-    mutationFn: (data: any) =>
+    mutationFn: (data: ProposalForm) =>
       proposalsApi.create({
         projectId: project.id,
         bidPaise: rupeesToPaise(data.bidRupees),
@@ -43,20 +55,19 @@ function ProposalModal({ project, onClose }: { project: any; onClose: () => void
       <div className="card" style={{ width: '100%', maxWidth: '520px', maxHeight: '90vh', overflowY: 'auto' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
           <h2 className="text-heading">Submit a proposal</h2>
-          <button onClick={onClose} className="btn btn-ghost btn-sm">✕</button>
+          <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.25rem', color: 'var(--text-muted)' }}>✕</button>
         </div>
 
-        <div className="card-flat" style={{ marginBottom: '1.5rem', padding: '1rem' }}>
-          <p style={{ fontWeight: 600, marginBottom: '0.25rem' }}>{project.title}</p>
-          <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Budget: {paiseToRupees(project.budgetPaise)}</p>
-        </div>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginBottom: '1.5rem' }}>
+          Project: <strong>{project.title}</strong> · Budget: <strong>{paiseToRupees(project.budgetPaise)}</strong>
+        </p>
 
         <form onSubmit={handleSubmit((d) => mutate(d))} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
             <div>
               <label className="field-label">Your bid (₹) *</label>
               <div style={{ position: 'relative' }}>
-                <span style={{ position: 'absolute', left: '0.875rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-secondary)' }}>₹</span>
+                <span style={{ position: 'absolute', left: '0.875rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>₹</span>
                 <input {...register('bidRupees')} type="number" className="input" style={{ paddingLeft: '1.75rem' }} placeholder="5000" />
               </div>
               {errors['bidRupees'] && <p className="field-error">{errors['bidRupees'].message as string}</p>}
@@ -74,7 +85,11 @@ function ProposalModal({ project, onClose }: { project: any; onClose: () => void
             {errors['coverNote'] && <p className="field-error">{errors['coverNote'].message as string}</p>}
           </div>
 
-          {error && <p style={{ color: 'var(--error)', fontSize: '0.875rem' }}>{(error as any).response?.data?.message ?? 'Failed to submit. Try again.'}</p>}
+          {error && (
+            <p style={{ color: 'var(--error)', fontSize: '0.875rem' }}>
+              {axios.isAxiosError(error) ? error.response?.data?.message ?? error.message : 'Failed to submit. Try again.'}
+            </p>
+          )}
 
           <div style={{ display: 'flex', gap: '1rem' }}>
             <button type="button" onClick={onClose} className="btn btn-ghost">Cancel</button>
@@ -89,9 +104,9 @@ function ProposalModal({ project, onClose }: { project: any; onClose: () => void
 }
 
 export default function DesignerDashboard() {
-  const [selectedProject, setSelectedProject] = useState<any | null>(null)
+  const [selectedProject, setSelectedProject] = useState<OpenProject | null>(null)
 
-  const { data: projects, isLoading } = useQuery({
+  const { data: projects, isLoading } = useQuery<OpenProject[]>({
     queryKey: ['open-projects'],
     queryFn: projectsApi.list,
     refetchInterval: 30_000, // Poll every 30s (Stage B polling strategy)
@@ -112,7 +127,7 @@ export default function DesignerDashboard() {
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          {projects.map((project: any) => (
+          {projects.map((project: OpenProject) => (
             <div key={project.id} className="card">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
                 <div style={{ flex: 1 }}>
