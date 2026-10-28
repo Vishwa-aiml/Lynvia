@@ -12,7 +12,7 @@ const schema = z.object({
   title: z.string().min(5, 'Title must be at least 5 characters').max(150),
   brief: z.string().min(30, 'Please describe your project in at least 30 characters').max(5000),
   category: z.enum(['logo_branding', 'poster_social']),
-  budgetRupees: z.coerce.number().min(500, 'Minimum budget is ₹500').max(500000),
+  budgetRupees: z.number().min(500, 'Minimum budget is ₹500').max(500000),
 })
 
 type PostProjectForm = z.infer<typeof schema>
@@ -125,7 +125,7 @@ export default function PostProjectPage() {
               fontWeight: 500,
             }}>₹</span>
             <input
-              {...register('budgetRupees')}
+              {...register('budgetRupees', { valueAsNumber: true })}
               type="number"
               className="input"
               style={{ paddingLeft: '1.75rem' }}

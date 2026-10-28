@@ -6,11 +6,12 @@ import { useState } from 'react'
 
 interface PendingDesigner {
   id: string
+  userId?: string
   name: string
   bio?: string
   specializations?: string[]
   portfolioUrls?: string[]
-  user?: { email?: string }
+  user?: { email?: string; id?: string }
 }
 
 export default function AdminVettingPage() {
@@ -50,58 +51,61 @@ export default function AdminVettingPage() {
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-          {pending.map((designer: PendingDesigner) => (
-            <div key={designer.id} className="card">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
-                <div>
-                  <h3 className="text-heading" style={{ marginBottom: '0.25rem' }}>{designer.name}</h3>
-                  <p className="text-sm" style={{ color: 'var(--text-muted)' }}>{designer.user?.email}</p>
+          {pending.map((designer: PendingDesigner) => {
+            const targetUserId = designer.userId ?? designer.user?.id ?? designer.id
+            return (
+              <div key={designer.id} className="card">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
+                  <div>
+                    <h3 className="text-heading" style={{ marginBottom: '0.25rem' }}>{designer.name}</h3>
+                    <p className="text-sm" style={{ color: 'var(--text-muted)' }}>{designer.user?.email}</p>
+                  </div>
+                  <span className="badge badge-pending">PENDING</span>
                 </div>
-                <span className="badge badge-pending">PENDING</span>
-              </div>
 
-              {designer.bio && (
-                <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem', fontSize: '0.9375rem' }}>{designer.bio}</p>
-              )}
+                {designer.bio && (
+                  <p style={{ color: 'var(--text-secondary)', marginBottom: '1rem', fontSize: '0.9375rem' }}>{designer.bio}</p>
+                )}
 
-              {designer.specializations?.length > 0 && (
-                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
-                  {designer.specializations.map((s: string) => (
-                    <span key={s} className="badge badge-accepted">{s}</span>
-                  ))}
+                {designer.specializations && designer.specializations.length > 0 && (
+                  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
+                    {designer.specializations.map((s: string) => (
+                      <span key={s} className="badge badge-accepted">{s}</span>
+                    ))}
+                  </div>
+                )}
+
+                <div style={{ marginBottom: '1rem' }}>
+                  <label className="field-label">Internal note (optional)</label>
+                  <input
+                    className="input"
+                    placeholder="Reason for approval/rejection..."
+                    value={note[targetUserId] ?? ''}
+                    onChange={(e) => setNote((n) => ({ ...n, [targetUserId]: e.target.value }))}
+                  />
                 </div>
-              )}
 
-              <div style={{ marginBottom: '1rem' }}>
-                <label className="field-label">Internal note (optional)</label>
-                <input
-                  className="input"
-                  placeholder="Reason for approval/rejection..."
-                  value={note[designer.userId] ?? ''}
-                  onChange={(e) => setNote((n) => ({ ...n, [designer.userId]: e.target.value }))}
-                />
+                <div style={{ display: 'flex', gap: '0.75rem' }}>
+                  <button
+                    onClick={() => updateVetting({ userId: targetUserId, status: 'APPROVED', note: note[targetUserId] })}
+                    disabled={isUpdating}
+                    className="btn btn-primary btn-sm"
+                    style={{ background: 'var(--success)', borderColor: 'var(--success)' }}
+                  >
+                    ✓ Approve
+                  </button>
+                  <button
+                    onClick={() => updateVetting({ userId: targetUserId, status: 'REJECTED', note: note[targetUserId] })}
+                    disabled={isUpdating}
+                    className="btn btn-secondary btn-sm"
+                    style={{ color: 'var(--error)', borderColor: 'var(--error)' }}
+                  >
+                    ✕ Reject
+                  </button>
+                </div>
               </div>
-
-              <div style={{ display: 'flex', gap: '0.75rem' }}>
-                <button
-                  onClick={() => updateVetting({ userId: designer.userId, status: 'APPROVED', note: note[designer.userId] })}
-                  disabled={isUpdating}
-                  className="btn btn-primary btn-sm"
-                  style={{ background: 'var(--success)', borderColor: 'var(--success)' }}
-                >
-                  ✓ Approve
-                </button>
-                <button
-                  onClick={() => updateVetting({ userId: designer.userId, status: 'REJECTED', note: note[designer.userId] })}
-                  disabled={isUpdating}
-                  className="btn btn-secondary btn-sm"
-                  style={{ color: 'var(--error)', borderColor: 'var(--error)' }}
-                >
-                  ✕ Reject
-                </button>
-              </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       )}
     </div>

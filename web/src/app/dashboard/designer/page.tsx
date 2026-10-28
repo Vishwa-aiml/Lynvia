@@ -9,8 +9,8 @@ import { useState } from 'react'
 import axios from 'axios'
 
 const proposalSchema = z.object({
-  bidRupees: z.coerce.number().min(100, 'Minimum bid ₹100'),
-  deliveryDays: z.coerce.number().int().min(1).max(365),
+  bidRupees: z.number().min(100, 'Minimum bid ₹100'),
+  deliveryDays: z.number().int().min(1).max(365),
   coverNote: z.string().max(1000).optional(),
 })
 type ProposalForm = z.infer<typeof proposalSchema>
@@ -68,13 +68,13 @@ function ProposalModal({ project, onClose }: { project: OpenProject; onClose: ()
               <label className="field-label">Your bid (₹) *</label>
               <div style={{ position: 'relative' }}>
                 <span style={{ position: 'absolute', left: '0.875rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }}>₹</span>
-                <input {...register('bidRupees')} type="number" className="input" style={{ paddingLeft: '1.75rem' }} placeholder="5000" />
+                <input {...register('bidRupees', { valueAsNumber: true })} type="number" className="input" style={{ paddingLeft: '1.75rem' }} placeholder="5000" />
               </div>
               {errors['bidRupees'] && <p className="field-error">{errors['bidRupees'].message as string}</p>}
             </div>
             <div>
               <label className="field-label">Delivery (days) *</label>
-              <input {...register('deliveryDays')} type="number" className="input" placeholder="7" />
+              <input {...register('deliveryDays', { valueAsNumber: true })} type="number" className="input" placeholder="7" />
               {errors['deliveryDays'] && <p className="field-error">{errors['deliveryDays'].message as string}</p>}
             </div>
           </div>
